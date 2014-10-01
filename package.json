@@ -1,0 +1,29 @@
+{
+  "name": "esri-leaflet-geocoder",
+  "version": "0.0.1-beta.5",
+  "description": "A Leaflet plugin that allows users to interact with geoprocessing services.",
+  "homepage": "https://github.com/Esri/esri-leaflet-gp",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Esri/esri-leaflet-gp.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "^0.4.3",
+    "grunt-contrib-uglify": "^0.2.0",
+    "grunt-contrib-watch": "^0.4.4",
+    "grunt-contrib-cssmin": "^0.6.0",
+    "grunt-contrib-concat": "^0.3.0",
+    "grunt-contrib-imagemin": "^0.3.0",
+    "grunt-s3": "^0.2.0-alpha.3"
+  },
+  "author": "John Gravois <jgravois@esri.com> (http://johngravois.com)",
+  "contributors": [
+    "John Gravois <jgravois@esri.com> (http://johngravois.com)",
+    "Nicholas Furness <nfurness@esri.com> (http://nixta.github.io/)",
+    "Patrick Arlt <parlt@esri.com> (http://patrickarlt.com)"
+  ],
+  "license": "Apache 2.0",
+  "readmeFilename": "README.md",
+  "dependencies": {}
+}

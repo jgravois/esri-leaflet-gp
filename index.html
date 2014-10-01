@@ -1,0 +1,92 @@
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>gp draw profile</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.draw/leaflet.draw.css"/>
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+  <!--cool draw plugin-->
+  <script src="http://leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
+  <!-- Load Esri Leaflet from CDN -->
+  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.6/esri-leaflet-core-src.js"></script>
+  <!--this isn't going to work until i can actually extend 'Task' itself-->
+  <script src="src/esri-leaflet-gp.js"></script>
+  <style>
+    body {margin:0;padding:0;}
+    #map {position: absolute;top:0;bottom:0;right:0;left:0;}
+    #info-pane {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      padding: 1em;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+</div>
+
+<script>
+  document.getElementById('info-pane').innerHTML = 'sketch a line and retrieve elevation data';
+
+  var map = L.map('map').setView([37.75, -122.23], 10);
+  L.esri.basemapLayer('Topographic').addTo(map);
+
+  var drawnItems = new L.FeatureGroup();
+  map.addLayer(drawnItems);
+
+  var drawControl = new L.Control.Draw({
+    position: 'topleft',
+    draw: {
+      polygon: false,
+      polyline: {
+        shapeOptions: {
+          color: 'green'
+        },
+      },
+      rectangle: false,
+      circle: false,
+      marker: false
+    },
+    edit: false
+  });
+  map.addControl(drawControl);
+
+  map.on('draw:created', function(e) {
+    var type = e.layerType,
+      layer = e.layer;
+    drawnItems.addLayer(layer);
+    var inputLine = layer.toGeoJSON();
+    gpTask.gpGeoJson("InputLineFeatures", inputLine);
+    gpTask.run(addGPResultToMap);
+    document.getElementById('info-pane').innerHTML = "working..."
+  });
+
+  var gpTask = new L.esri.Tasks.Geoprocessing("http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile");
+  gpTask.gpString("DEMResolution", "FINEST");
+  gpTask.gpString("ProfileIdField", "OID");
+  gpTask.gpNumber("MaximumSampleDistance", 50000);
+  gpTask.gpBoolean("returnZ", true);
+
+  //not sure why 'error' isn't retrieved in first position
+  function addGPResultToMap(answer, response, error) {
+    document.getElementById('info-pane').innerHTML = 'click on markers to see elevations';
+    coords = answer.features[0].geometry.coordinates;
+    for (var i = 0; i < coords.length; i++) {
+      var resLatLng = L.latLng(coords[i][1], coords[i][0]);
+      var myMarker = L.marker(resLatLng).addTo(map);
+      myMarker.bindPopup("elevation: " + parseInt(coords[i][2]) + " meters");
+    }
+  }
+</script>
+
+</body>
+</html>
