@@ -1,3 +1,7 @@
+/*
+to do:
+add event emitters?
+*/
 L.esri.Tasks.Geoprocessing = L.esri.Tasks.Task.extend({
   setters: {
     //none

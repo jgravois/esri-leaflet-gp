@@ -6,62 +6,88 @@ Esri Leaflet GP is a small series of API helpers and UI controls to interact wit
 
 Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
-## Example  (everything from here on needs updated)
+## Example
 
-Take a look at the [live demo](http://esri.github.com/esri-leaflet/examples/geocoding-control.html).
-
-![Example Image](https://raw.github.com/esri/esri-leaflet-geocoder/master/example.png)
+Take a look at the [live demo](http://esri.github.com/esri-leaflet/examples/gp-task.html).
 
 ```html
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Esri Leaflet Geocoder</title>
+<head>
+  <meta charset=utf-8 />
+  <title>gp drivetime</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-    <!-- Load Leaflet from their CDN -->
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
-    <!-- Make the map fill the entire page -->
-    <style>
-      #map {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-      }
-    </style>
-
-    <!-- Esri Leaflet Core -->
+  <!-- Esri Leaflet Core -->
     <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet-core.js"></script>
 
-    <!-- Esri Leaflet Geocoder -->
-    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-geocoder.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-geocoder.css">
-  </head>
-  <body>
-    <div id="map"></div>
-    <script>
-      var map = L.map('map').setView([45.5165, -122.6764], 12);
+  <!-- Esri Leaflet GP -->
+  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-gp.js"></script>
 
-      var tiles = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+  <style>
+    body {
+      margin:0;
+      padding:0;
+    }
 
-      // create the geocoding control and add it to the map
-      var searchControl = new L.esri.Controls.Geosearch().addTo(map);
+    #map {
+      position: absolute;
+      top:0;
+      bottom:0;
+      right:0;left:0;
+    }
 
-      // create an empty layer group to store the results and add it to the map
-      var results = new L.LayerGroup().addTo(map);
+    #info-pane {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      padding: 1em;
+      background: white;
+    }
+  </style>
+</head>
+<body>
 
-      // listen for the results event and add every result to the map
-      searchControl.on("results", function(data){
-        results.clearLayers();
-        for (var i = data.results.length - 1; i >= 0; i--) {
-          results.addLayer(L.marker(data.results[i].latlng));
-        };
-      });
-    </script>
-  </body>
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+</div>
+
+<script>
+  document.getElementById('info-pane').innerHTML = 'click on the map to calculate 5 and 10 minute drivetimes';
+
+  var map = L.map('map').setView([40, -74.2], 12);
+
+  L.esri.basemapLayer('NationalGeographic').addTo(map);
+
+  var gpTask = new L.esri.Tasks.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+  gpTask.gpString("Drive_Times", "5 10");
+
+  var driveTimes = new L.FeatureGroup();
+  map.addLayer(driveTimes);
+
+  var mapClickGeoJson = { "type": "FeatureCollection", "features": []};
+  mapClickGeoJson.features.push({ "type":"Feature", "geometry":{"type":"Point"}});
+
+  map.on('click', function(evt){
+    driveTimes.clearLayers();
+    mapClickGeoJson.features[0].geometry.coordinates = [];
+    mapClickGeoJson.features[0].geometry.coordinates.push(evt.latlng.lng, evt.latlng.lat);
+    gpTask.gpGeoJson("Input_Location", mapClickGeoJson)
+    gpTask.run(driveTimeCallback);
+  });
+
+  function driveTimeCallback(response, raw, error){
+    driveTimes.addLayer(L.geoJson(response));
+  }
+
+</script>
+
+</body>
 </html>
 ```
 
@@ -73,143 +99,49 @@ Take a look at the [live demo](http://esri.github.com/esri-leaflet/examples/geoc
 
 Constructor | Options | Description
 --- | --- | ---
-`new L.esri.Task.Geoprocessing(url)`<br>`L.esri.Controls.geosearch(options)` | [`<GeosearchOptions>`](#options) | Creates a new Geoprocessing Task.
+`new L.esri.Task.Geoprocessing(url)`<br>`L.esri.Tasks.Tasks(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Task.
 
 ### Options
 
-Option | Type | Default | Description
---- | --- | --- | ---
-`position` | `String` | `topleft` | One of the valid Leaflet [control positions](http://leafletjs.com/reference.html#control-positions).
-`zoomToResult` | `Boolean` | `true` | If `true` the map will zoom the result after geocoding is complete.
-`useMapBounds` | `Boolean` or <br> `Integer` | `12` | Determines if and when the geocoder should begin using the bounds of the map to enchance search results. If `true` the geocoder will always return results in the current map bounds. If `false` it will always search the world. If an integer like `11` is passed in the geocoder will use the bounds of the map for searching if the map is at a zoom level equal to or greater than the integer. This mean the geocoder will prefer local results when the map is zoomed in.
-`collapseAfterResult` | `Boolean` | `true` | If the geocoder is expanded after a result this will collapse it.
-`expanded` | `Boolean` | `true` | Start the control in an expanded state.
-`maxResults` | `Integer` | `25` | The maximum number of results to return from a geocoding request. Max is 50.
-`token` | `String` | `false` | A token to pass with requests.
-`forStorage` | `Boolean` | `true` | You must set this to true if you intend for your users to store the results of your results.
-`allowMultipleResults` | `Boolean` | `true` | If set to `true` and the user submits the form without a suggestion selected geocodes the current text in the input and zooms the user to view all the results.
-
-You can also pass any options you can pass to L.esri.Services.Geocoding.
+L.esri.Tasks.Geoprocessing accepts all L.esri.Tasks.Task options.
 
 ### Methods
 
-Method | Options | Description
+Method | Returns | Description
 --- | --- | ---
-`clear()` | `null` | Clears the text currently in the geocoder and collapses it if `collapseAfterResult` is true.
-
-### Events
-
-Event | Data | Description
---- | --- | ---
-`load` | `null` | A generic event fired when a request to the geocoder starts.
-`loading` | `null` | A generic event fired when a request to the geocoder finished.
-`results` | [`<ResultsEvent>`](#results-event) | Fired when a result is returned from the geocoder.
-
-#### Results Event
-
-Property | Type | Description
---- | --- | ---
-`bounds` | [`L.LatLngBounds`](http://leafletjs.com/reference.html#latlngbounds)| The bounds arround this suggestion. Good for zooming to results like cities and states.
-`latlng` | [`L.LatLng`](http://leafletjs.com/reference.html#latlng)| The center of the result.
-`results` | [`[<ResultObject>]`](#result-object) | An array of [result objects](#result-object).
+`gpString(<String> inputParamName, <String> value)` | `this` | Sets an input string parameter.
+`gpNumber(<String> inputParamName, <Number> value)` | `this` | Sets an input number parameter.
+`gpBoolean(<String> inputParamName, <Boolean> value)` | `this` | Sets an input boolean parameter.
+`gpGeoJson(<String> inputParamName, <GeoJson> value)` | `this` | Converts a GeoJson geometry or FeatureCollection into GeoServices json before setting the input parameter.
+`run(<Function> callback)` | `this` | Calls the corresponding Geoprocessing service, passing the previously supplied input parameters.
+`gpAsyncResultParam(<String> resultParamName, <Object> value)` | `this` | Sets a result parameter for Asynchronous geoprocessing services that require it.
 
 #### Result Object
 
-A single result from the geocoder. You should not rely on all these properties being present in every result object.
+A single result from the geoprocessing service. You should not rely on all these properties being present in every result object.
 
 Property | Type | Description
 --- | --- | ---
-`text` | `String` | The text that was passed to the geocoder.
-`bounds` | [`L.LatLngBounds`](http://leafletjs.com/reference.html#latlngbounds)| The bounds arround this suggestion. Good for zooming to results like cities and states.
-`latlng` | [`L.LatLng`](http://leafletjs.com/reference.html#latlng)| The center of the result.
-`name` | `String` | Name of the geocoded place. Usually something like "Paris" or "Starbucks".
-`match` | `String` | What was matched internally in the geocoder. Cooresponded to the [`Addr_type`](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Service_output/02r300000017000000/) field in the geocoding service.
-`country` | `String` | The country the geocoded place is located in.
-`region` | `String` | The largest administrative area for a country that the geocoded palce is in, typically a state or province.
-`subregion` | `String` | The next largest administrative area for a the geocoded place, typically a county or region.
-`city` | `String` | The city the geocoded place is located in.
-`address` | `String` | Complete address returned for the geocoded place. The format is based on address standards for the country within which the address is located.
+`features` | [`L.geoJson`] | An array of geoJson features.
+`result` | `<object>`| A result object typically containing a link to the url of an output file written to disk on the server.
 
-## L.esri.Services.Geocoding
-A basic wrapper for ArcGIS Online geocoding services. Used internally by `L.esri.Controls.Geosearch`.
+#### GP Results
 
-### Constructor
-
-Constructor | Options | Description
---- | --- | ---
-`new L.esri.Services.Geocoding(url, options)`<br>`L.esri.Controls.geosearch(url, options)`<br>`new L.esri.Services.Geocoding(options)`<br>`L.esri.Controls.geosearch(options)` | [`<GeosearchOptions>`](#options-1) | Creates a new Geosearch control you can pass the url as the first parameter or as `url` in the options to a custom geocoding enpoint if you do no want to use the ArcGIS Online World Geocoding service.
-
-### Options
-
-Option | Type | Default | Description
---- | --- | --- | ---
-`url` | `String` | `<WorldGeocodeServiceURL>` | Defaults to the ArcGIS World Geocoding service.
-
-You can also pass any options you can pass to L.esri.Services.Service.
-
-### Methods
-
-Method | Options | Description
---- | --- | ---
-`geocode(text, object, callback)` | [`<GeocodeOptions>`](#geocode-options) | Geocodes the specified `text` with the passed [`<GeocodeOptions>``](#geocode-options). `callback` will be called with `error`, [`Geocode Results`](geocode-results) and `response` as the parameters.
-`suggest(text, object, callback)` | [`<SuggestOptions>`](#suggest-options) | Suggests results for `text` with the given [`<SuggestOptions>`](#suggest-options). `callback` will be called with `error` and `response` parameters.
-`reverse(latlng, object, callback)` | [`<ReverseOptions>`](#reverse-options) | Suggests results for `text` with the given [`<ReverseOptions>`](#reverse-options). `callback` will be called with `error`, [`Reverse Geocode Result`](reverse-geocode-result) and `response` as the parameters.
-
-### Events
-
-Event | Data | Description
---- | --- | ---
-`load` | `null` | A generic event fired when a request to the geocoder begins.
-`loading` | `null` | A generic event fired when a request to the geocoder is finished.
-
-#### Geocode Options
-
-The `geocode` method can accept any options from the [geocode service](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Single_input_field_geocoding/02r300000015000000/) with the exception of `text`.
-
-#### Suggest Options
-
-The `suggest` method can accept any options from the [suggest service](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Working_with_suggestions/02r300000238000000/) with the exception of `text`.
-
-#### Reverse Geocode Options
-
-The `suggest` method can accept any options from the [reverse geocoding service](http://resources.arcgis.com/en/help/arcgis-rest-api/#/Reverse_geocoding/02r30000000n000000/) with the exception of location.
-
-#### Geocode Results
-
-Geocode results conform to the following format
+Geoprocessing results conform to the following format
 
 ```json
 [
   {
-    text: 'Text',
-    bounds: L.LatLngBounds,
-    latlng: L.LatLng,
-    name: 'PlaceName',
-    match: 'AddressType',
-    country: 'Country',
-    region: 'Region',
-    subregion: 'Subregion',
-    city: 'City',
-    address: 'Address'
+    features: [L.geoJson],
+    result:{
+      "paramName": "Output_File",
+      "dataType": "GPDataFile",
+      "value": {
+        "url": "http://server/arcgis/rest/directories/arcgisoutput/./_ags_856aed6eb_.png"
+      }
+    }
   }
 ]
-```
-
-#### Reverse Geocode Result
-Reverse geocoding results conform to the following format
-
-```json
-{
-  latlng: L.LatLng,
-  address: 'Address',
-  neighborhood: 'Neighborhood',
-  city: 'City',
-  subregion: 'Subregion',
-  region: 'Region',
-  postal: 'Postal',
-  postalExt: 'PostalExt',
-  countryCode: 'CountryCode'
-}
 ```
 
 ## Development Instructions
@@ -241,7 +173,7 @@ Esri welcomes contributions from anyone and everyone. Please see our [guidelines
 
 ## Terms and Conditions
 
-You should signup for an [ArcGIS for Developers account](https://developers.arcgis.com/en/plans) or purchase an [ArcGIS Online Organizational Subscription](http://www.arcgis.com/features/plans/pricing.html).
+Signup for an [ArcGIS for Developers account](https://developers.arcgis.com/en/plans) or purchase an [ArcGIS Online Organizational Subscription](http://www.arcgis.com/features/plans/pricing.html).
 
 1. Once you have an account you are good to go. Thats it!
 2. If you use this library in a revenue generating application or for goverment use you must upgrade to a paid account. You are not allowed to generate revenue while on a free plan.
