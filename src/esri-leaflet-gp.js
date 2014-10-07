@@ -111,7 +111,7 @@ L.esri.Tasks.Geoprocessing = L.esri.Tasks.Task.extend({
     }
     else {
       return this.request(function(error, response){
-        callback.call(error, (response && this.processGPOutput(response)), response);
+        callback.call(context, error, (response && this.processGPOutput(response)), response);
       }, this);
     }
   },

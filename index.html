@@ -8,16 +8,16 @@
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
-  <script src="src/EsriLeaflet.js"></script>
-  <script src="src/Request.js"></script>
-  <script src="src/Services/Service.js"></script>
+  <script src="../esri-leaflet/src/EsriLeaflet.js"></script>
+  <script src="../esri-leaflet/src/Request.js"></script>
+  <script src="../esri-leaflet/src/Services/Service.js"></script>
 
-  <script src="src/Tasks/Task.js"></script>
-  <script src="src/Services/MapService.js"></script>
-  <script src="src/Layers/BasemapLayer.js"></script>
-  <script src="src/Controls/Logo.js"></script>
-  <script src="src/Util.js"></script>
-  <script src="src/Tasks/Geoprocessing.js"></script>
+  <script src="../esri-leaflet/src/Tasks/Task.js"></script>
+  <script src="../esri-leaflet/src/Services/MapService.js"></script>
+  <script src="../esri-leaflet/src/Layers/BasemapLayer.js"></script>
+  <script src="../esri-leaflet/src/Controls/Logo.js"></script>
+  <script src="../esri-leaflet/src/Util.js"></script>
+  <script src="src/esri-leaflet-gp.js"></script>
   <style>
     body {
       margin:0;
@@ -45,11 +45,12 @@
 
 <div id="map"></div>
 <div id="info-pane" class="leaflet-bar">
+  <label>
+    click on the map to calculate 5 and 10 minute drivetimes
+  </label>
 </div>
 
 <script>
-  document.getElementById('info-pane').innerHTML = 'click on the map to calculate 5 and 10 minute drivetimes';
-
   var map = L.map('map').setView([40, -74.2], 12);
 
   L.esri.basemapLayer('NationalGeographic').addTo(map);
@@ -64,6 +65,7 @@
   mapClickGeoJson.features.push({ "type":"Feature", "geometry":{"type":"Point"}});
 
   map.on('click', function(evt){
+    document.getElementById('info-pane').innerHTML = 'working...';
     driveTimes.clearLayers();
     mapClickGeoJson.features[0].geometry.coordinates = [];
     mapClickGeoJson.features[0].geometry.coordinates.push(evt.latlng.lng, evt.latlng.lat);
@@ -71,7 +73,8 @@
     gpTask.run(driveTimeCallback);
   });
 
-  function driveTimeCallback(response, raw, error){
+  function driveTimeCallback(error, response, raw){
+    document.getElementById('info-pane').innerHTML = 'click on the map to calculate 5 and 10 minute drivetimes';
     driveTimes.addLayer(L.geoJson(response));
   }
 
