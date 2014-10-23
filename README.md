@@ -7,9 +7,9 @@ Esri Leaflet GP is a small series of API helpers and UI controls to interact wit
 Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Example
-Note that this plugin requires changes introduced after esri-leaflet 0.0.1-beta.6 was released.  (tested against master branch on 10/1/14)
+Note that this plugin requires changes introduced in esri-leaflet 1.0.0 Release Candidate 2.
 
-Take a look at this [elevation profile demo](https://dl.dropboxusercontent.com/u/59331579/js/esri-leaflet-gp/gp-elevationprofile.html) to see it in action.
+Take a look at this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/index.html) to see it in action.
 
 ```html
 <!DOCTYPE html>
