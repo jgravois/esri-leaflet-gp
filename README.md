@@ -9,7 +9,7 @@ Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstractio
 ## Example
 Note that this plugin requires changes introduced in esri-leaflet 1.0.0 Release Candidate 2.
 
-Take a look at this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/index.html) to see it in action.
+Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-leaflet-gp/index.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/index.html) to see it in action.
 
 ```html
 <!DOCTYPE html>
