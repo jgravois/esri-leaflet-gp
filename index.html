@@ -38,17 +38,17 @@
 <div id="map"></div>
 <div id="info-pane" class="leaflet-bar">
   <label>
-    click on the map to calculate 5 and 10 minute drivetimes
+    click on the map to calculate 3 and 5 minute drivetimes
   </label>
 </div>
 
 <script>
-  var map = L.map('map').setView([40, -74.2], 12);
+  var map = L.map('map').setView([42.36, -71.06], 14);
 
   L.esri.basemapLayer('NationalGeographic').addTo(map);
 
   var gpTask = new L.esri.Tasks.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
-  gpTask.gpString("Drive_Times", "5 10");
+  gpTask.gpString("Drive_Times", "3 5");
 
   var driveTimes = new L.FeatureGroup();
   map.addLayer(driveTimes);
@@ -66,7 +66,7 @@
   });
 
   function driveTimeCallback(error, response, raw){
-    document.getElementById('info-pane').innerHTML = 'click on the map to calculate 5 and 10 minute drivetimes';
+    document.getElementById('info-pane').innerHTML = 'click on the map to calculate 3 and 5 minute drivetimes';
     driveTimes.addLayer(L.geoJson(response));
   }
 
