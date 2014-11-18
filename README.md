@@ -160,8 +160,8 @@ Geoprocessing results conform to the following format
 ```json
 [
   {
-    features: [L.geoJson],
-    result:{
+    "features": [L.geoJson],
+    "result":{
       "paramName": "Output_File",
       "dataType": "GPDataFile",
       "value": {
