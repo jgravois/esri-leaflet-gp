@@ -16,9 +16,7 @@
   <!-- Load Esri Leaflet from CDN -->
   <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.4/esri-leaflet.js"></script>
 
-  <script src="src/esri-leaflet-gp.js"></script>
-  <script src="src/Services/Geoprocessing.js"></script>
-  <script src="src/Tasks/Geoprocessing.js"></script>
+  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-beta.2.js"></script>
   <style>
     body {
       margin:0;
@@ -83,7 +81,7 @@
     document.getElementById('info-pane').innerHTML = "working..."
   });
 
-  var gpService = new L.esri.GP.Services.Geoprocessing("http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile", { "path": "execute" });
+  var gpService = new L.esri.GP.Services.Geoprocessing("http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile");
   var gpTask = gpService.createTask();
 
   gpTask.gpString("DEMResolution", "FINEST");

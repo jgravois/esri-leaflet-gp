@@ -8,8 +8,10 @@
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
-  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.2/esri-leaflet.js"></script>
-  <script src="src/esri-leaflet-gp.js"></script>
+  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.4/esri-leaflet.js"></script>
+
+  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-beta.2.js"></script>
+
   <style>
     body {
       margin:0;
@@ -38,21 +40,20 @@
 <div id="map"></div>
 <div id="info-pane" class="leaflet-bar">
   <label>
-    click on the map to calculate 3 and 5 minute drivetimes
+    click on the map to calculate 1 and 2 minute drivetimes
   </label>
 </div>
 
 <script>
-  var map = L.map('map').setView([42.36, -71.06], 14);
+  var map = L.map('map').setView([42.36, -71.06], 13);
 
-  L.esri.basemapLayer('NationalGeographic').addTo(map);
+  L.esri.basemapLayer('Gray').addTo(map);
 
-  var gpService = new L.esri.Services.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+  var gpService = new L.esri.GP.Services.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
 
   var gpTask = gpService.createTask();
 
-  // var gpTask = new L.esri.Tasks.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
-  gpTask.gpString("Drive_Times", "3 5");
+  gpTask.gpString("Drive_Times", "1 2");
 
   var driveTimes = new L.FeatureGroup();
   map.addLayer(driveTimes);
@@ -70,7 +71,7 @@
   });
 
   function driveTimeCallback(error, response, raw){
-    document.getElementById('info-pane').innerHTML = 'click on the map to calculate 3 and 5 minute drivetimes';
+    document.getElementById('info-pane').innerHTML = 'click on the map to calculate 1 and 2 minute drivetimes';
     driveTimes.addLayer(L.geoJson(response));
   }
 

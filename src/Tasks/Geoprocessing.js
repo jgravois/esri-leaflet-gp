@@ -4,48 +4,40 @@ add event emitters?
 */
 
 EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
-  setters: {
-    //none
-  },
-  params: {
-    //no hardcoded parameters, does this even accomplish anything?
-  },
-  resultParams: {
-    //same
-  },
+  //setters: {}, we don't use these because we don't know the ParamName OR value of custom GP services
+  params: {},
+  resultParams: {},
 
   initialize: function(url, options) {
-    //we should be able to pass in an operation name
-    //i think we could try jsonp here too instead of going from CORS to guessing
-
     //don't replace parent initialize
     L.esri.Tasks.Task.prototype.initialize.call(this, url, options);
 
-    //this.path = this.options.path;
-
-    //if path isn't supplied in options
+    //if path isn't supplied in options, try and determine if its sync or async to set automatically
     if (!this.options.path) {
-      this.request(function(error, results) {
-        if (undefined === error) {
+      //the parameters below seem wonky to me, but work for both CORS and JSONP requests
+      this._service.request("", {'f':'json'}, function(error, results) {
+        if (!error) {
           if (results.executionType === "esriExecutionTypeSynchronous") {
-            this.synchronous = true;
+            this.options.async = false;
             this.options.path = "execute";
           } else {
-            this.synchronous = false;
+            this.options.async = true;
             this.options.path = "submitJob";
           }
         } else {
-          //assuming that GP services on non CORS enabled servers are synchronous (this is not safe)
-          this.synchronous = true;
+          //if check fails, hopefully its generic synchronous
+          this.options.async = false;
           this.options.path = "execute";
           return;
         }
-        //we could support SOEs and Network Analyst services too if we bypassed testing for synchronicity and just let people pass a raw url
       }, this);
     }
-
-
-
+    else {
+      //if path is custom, hopefully its synchronous
+      if (this.options.async != true && this.options.path != "submitJob") {
+        this.options.async = false;
+      }
+    }
   },
   //doc for various GPInput types can be found here
   //http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/GP_Result/02r3000000q7000000/
@@ -73,7 +65,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     this.resultParams[paramName] = paramValue;
   },
 
-  //would be nice to be able to accept LatLng, Bounds, Polygons etc. as well
+  //should try and implement query._setGeometry() instead (to accept LatLng, Bounds etc.)
   gpGeoJson: function(paramName, geoJson) {
     var processedInput = {
       "geometryType": "",
@@ -116,7 +108,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
   run: function(callback, context) {
     var jobId;
-    if (this.synchronous === false) {
+    if (this.options.async === true) {
       this._service.request(this.options.path, this.params, function(error, response) {
         jobId = response.jobId;
         this.checkJob(jobId, callback, context);
@@ -152,7 +144,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     var processedResponse = {};
     var responseValue;
 
-    if (this.synchronous === true) {
+    if (this.options.async === false) {
       responseValue = response.results[0].value;
     } else {
       responseValue = response.value;

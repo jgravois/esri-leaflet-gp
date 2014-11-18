@@ -105,7 +105,8 @@ Constructor | Options | Description
 
 Option | Type | Default | Description
 --- | --- | --- | ---
-`path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical CORS enabled Geoprocessing services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
+`path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical Geoprocessing services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
+`async` | `Boolean` | `false` | (Optional) Set 'async' to indicate whether a GP service with a custom operation name is synchronous or asynchronous.
 
 L.esri.GP.Services.Geoprocessing also accepts all L.esri.Services.Service options.
 

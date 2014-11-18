@@ -1,6 +1,6 @@
 {
   "name": "esri-leaflet-geocoder",
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.2",
   "description": "A Leaflet plugin that allows users to interact with geoprocessing services.",
   "homepage": "https://github.com/jgravois/esri-leaflet-gp",
   "repository": {
