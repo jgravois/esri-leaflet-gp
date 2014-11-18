@@ -65,7 +65,9 @@ Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-l
 
   L.esri.basemapLayer('NationalGeographic').addTo(map);
 
-  var gpTask = new L.esri.Tasks.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+  var gpService = new L.esri.GP.Services.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+  var gpTask = gpService.createTask();
+
   gpTask.gpString("Drive_Times", "5 10");
 
   var driveTimes = new L.FeatureGroup();
