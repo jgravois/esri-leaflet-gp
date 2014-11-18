@@ -36,15 +36,11 @@ module.exports = function(grunt) {
       },
       js: {
         src: [
-          'src/esri-leaflet-geocoder.js'
+          'src/esri-leaflet-gp.js',
+          'src/Services/Geoprocessing.js',
+          'src/Tasks/Geoprocessing.js'
         ],
-        dest: 'dist/esri-leaflet-geocoder-src.js'
-      },
-      css: {
-        src: [
-          'src/esri-leaflet-geocoder.css'
-        ],
-        dest: 'dist/esri-leaflet-geocoder-src.css'
+        dest: 'dist/esri-leaflet-gp-src.js'
       }
     },
     uglify: {
@@ -55,32 +51,8 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'dist/esri-leaflet-geocoder.js': [
-            'dist/esri-leaflet-geocoder-src.js'
-          ]
-        }
-      }
-    },
-    imagemin: {
-      dynamic: {
-        files: [{
-          expand: true,
-          cwd: 'src/',
-          src: ['img/*.{png,jpg,gif}'],
-          dest: 'dist/'
-        }]
-      }
-    },
-    cssmin: {
-      main: {
-        options: {
-          wrap: false,
-          preserveComments: 'some',
-          report: 'gzip'
-        },
-        files: {
-          'dist/esri-leaflet-geocoder.css': [
-            'dist/esri-leaflet-geocoder-src.css'
+          'dist/esri-leaflet-gp.js': [
+            'dist/esri-leaflet-gp-src.js'
           ]
         }
       }
@@ -101,11 +73,11 @@ module.exports = function(grunt) {
         upload: [
           {
             src: 'dist/*',
-            dest: 'esri-leaflet-geocoder/<%= pkg.version %>/'
+            dest: 'esri-leaflet-gp/<%= pkg.version %>/'
           },
           {
             src: 'dist/img/*',
-            dest: 'esri-leaflet-geocoder/<%= pkg.version %>/img'
+            dest: 'esri-leaflet-gp/<%= pkg.version %>/img'
           }
         ]
       }
@@ -120,7 +92,7 @@ module.exports = function(grunt) {
   }
 
   grunt.registerTask('default', ['build']);
-  grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'imagemin', 'cssmin']);
+  grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');

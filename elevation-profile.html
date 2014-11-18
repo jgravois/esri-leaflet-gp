@@ -14,8 +14,11 @@
   <script src="//leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.2/esri-leaflet.js"></script>
+  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.4/esri-leaflet.js"></script>
+
   <script src="src/esri-leaflet-gp.js"></script>
+  <script src="src/Services/Geoprocessing.js"></script>
+  <script src="src/Tasks/Geoprocessing.js"></script>
   <style>
     body {
       margin:0;
@@ -80,7 +83,9 @@
     document.getElementById('info-pane').innerHTML = "working..."
   });
 
-  var gpTask = new L.esri.Tasks.Geoprocessing("http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile");
+  var gpService = new L.esri.GP.Services.Geoprocessing("http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile", { "path": "execute" });
+  var gpTask = gpService.createTask();
+
   gpTask.gpString("DEMResolution", "FINEST");
   gpTask.gpString("ProfileIdField", "OID");
   gpTask.gpNumber("MaximumSampleDistance", 50000);

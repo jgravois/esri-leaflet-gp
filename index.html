@@ -47,7 +47,11 @@
 
   L.esri.basemapLayer('NationalGeographic').addTo(map);
 
-  var gpTask = new L.esri.Tasks.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+  var gpService = new L.esri.Services.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+
+  var gpTask = gpService.createTask();
+
+  // var gpTask = new L.esri.Tasks.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
   gpTask.gpString("Drive_Times", "3 5");
 
   var driveTimes = new L.FeatureGroup();

@@ -24,10 +24,10 @@ Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-l
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
   <!-- Esri Leaflet Core -->
-    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/0.0.1-beta.5/esri-leaflet-core.js"></script>
+    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.4/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.3/esri-leaflet-gp.js"></script>
+  <script src="dist/esri-leaflet-gp.js"></script>
 
   <style>
     body {
@@ -91,8 +91,32 @@ Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-l
 </body>
 </html>
 ```
+## L.esri.GP.Services.Geoprocessing
 
-## L.esri.Tasks.Geoprocessing
+### Constructor
+
+**Extends** [`L.esri.Services.Service`](http://esri.github.io/esri-leaflet/api-reference/tasks/task.html)
+
+Constructor | Options | Description
+--- | --- | ---
+`new L.esri.GP.Services.Geoprocessing(url)`<br>`L.esri.Services.Service(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Service.
+
+### Options
+
+Option | Type | Default | Description
+--- | --- | --- | ---
+`path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical CORS enabled Geoprocessing services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
+
+L.esri.GP.Services.Geoprocessing also accepts all L.esri.Services.Service options.
+
+### Methods
+
+Method | Returns | Description
+--- | --- | ---
+`createTask()` | `L.esri.GP.Tasks.Geoprocessing` | Returns a Geoprocessing task.
+
+
+## L.esri.GP.Tasks.Geoprocessing
 
 ### Constructor
 
@@ -100,11 +124,11 @@ Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-l
 
 Constructor | Options | Description
 --- | --- | ---
-`new L.esri.Task.Geoprocessing(url)`<br>`L.esri.Tasks.Tasks(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Task.
+`GeoprocessingService.createTask()`<br>`L.esri.Tasks.Tasks(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Task.
 
 ### Options
 
-L.esri.Tasks.Geoprocessing accepts all L.esri.Tasks.Task options.
+L.esri.GP.Tasks.Geoprocessing accepts all L.esri.Tasks.Task options.
 
 ### Methods
 
