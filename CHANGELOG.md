@@ -1,5 +1,8 @@
 # Changelog
 
+## Beta 3
+?
+
 ## Beta 2
 
 **Breaking Changes**
