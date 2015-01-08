@@ -16,7 +16,10 @@
   <!-- Load Esri Leaflet from CDN -->
   <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.5/esri-leaflet.js"></script>
 
-  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-beta.3.js"></script>
+  <script src="src/esri-leaflet-gp.js"></script>
+  <script src="src/Services/Geoprocessing.js"></script>
+  <script src="src/Tasks/Geoprocessing.js"></script>
+
   <style>
     body {
       margin:0;
@@ -85,10 +88,10 @@
   );
   var gpTask = gpService.createTask();
 
-  gpTask.setParam("DEMResolution", "FINEST")
-    .setParam("ProfileIdField", "OID")
-    .setParam("MaximumSampleDistance", 50000)
-    .setParam("returnZ", true);
+  gpTask.setParam("DEMResolution", "FINEST");
+  gpTask.setParam("ProfileIdField", "OID");
+  gpTask.setParam("MaximumSampleDistance", 50000);
+  gpTask.setParam("returnZ", true);
 
   //haven't figured out why 'error' isn't retrieved in first position
   function addGPResultToMap(error, result, raw) {
