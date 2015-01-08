@@ -6,6 +6,6 @@ EsriLeafletGP.Services.Geoprocessing = Esri.Services.Service.extend({
   }
 });
 
-EsriLeafletGP.Services.geoprocessing = function(url, options) {
-  return new EsriLeafletGP.Services.Geoprocessing(url, options);
+EsriLeafletGP.Services.geoprocessing = function(options) {
+  return new EsriLeafletGP.Services.Geoprocessing(options);
 };

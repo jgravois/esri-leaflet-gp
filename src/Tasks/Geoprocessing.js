@@ -1,6 +1,7 @@
 /*
 to do:
-add event emitters?
+add event emitters
+setParam([])
 */
 
 EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
@@ -8,14 +9,14 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
   params: {},
   resultParams: {},
 
-  initialize: function(url, options) {
+  initialize: function(options) {
     //don't replace parent initialize
-    L.esri.Tasks.Task.prototype.initialize.call(this, url, options);
+    L.esri.Tasks.Task.prototype.initialize.call(this, options);
 
     //if path isn't supplied in options, try and determine if its sync or async to set automatically
     if (!this.options.path) {
       //the parameters below seem wonky to me, but work for both CORS and JSONP requests
-      this._service.request("", {'f':'json'}, function(error, results) {
+      this._service.metadata(function(error, results) {
         if (!error) {
           if (results.executionType === "esriExecutionTypeSynchronous") {
             this.options.async = false;
@@ -25,7 +26,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
             this.options.path = "submitJob";
           }
         } else {
-          //if check fails, hopefully its generic synchronous
+          //if check fails, hopefully its synchronous
           this.options.async = false;
           this.options.path = "execute";
           return;
@@ -34,76 +35,110 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     }
     else {
       //if path is custom, hopefully its synchronous
-      if (this.options.async != true && this.options.path != "submitJob") {
+      if (this.options.async !== true && this.options.path !== "submitJob") {
         this.options.async = false;
       }
     }
   },
+
   //doc for various GPInput types can be found here
   //http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/GP_Result/02r3000000q7000000/
 
-  gpString: function(paramName, paramValue) {
-    if (typeof paramValue === "string") {
+  //set booleans, numbers, strings
+  setParam: function(paramName, paramValue) {
+
+    if (typeof paramValue === "boolean") {
       this.params[paramName] = paramValue;
+      return;
+    }
+    //strings, numbers
+    else if (typeof paramValue !== "object") {
+      this.params[paramName] = paramValue;
+      return;
+    }
+    else {
+      //otherwise assume its latlng, marker, bounds or geojson
+      this._setGeometry(paramName, paramValue);
     }
   },
 
-  gpNumber: function(paramName, paramValue) {
-    if (typeof paramValue === "number") {
-      this.params[paramName] = paramValue;
-    }
-  },
-
-  gpBoolean: function(paramName, bool) {
-    if (typeof bool === "boolean") {
-      this.params[paramName] = bool;
-    }
-  },
+  // not sure how best to handle passing more than one parameter at once
+  // setParams: function(inputArray) {
+  //   if (L.Util.isArray(inputArray)) {
+  //     for (var i = 0; i < inputArray.length; i++) {
+  //       this.setParam(inputArray[i]);
+  //     }
+  //   }
+  // },
 
   //necessary because of the design requirement that resultParams be specified for async elevation services in order to get Zs (unnecessarily confusing)
   gpAsyncResultParam: function(paramName, paramValue) {
     this.resultParams[paramName] = paramValue;
   },
 
-  //should try and implement query._setGeometry() instead (to accept LatLng, Bounds etc.)
-  gpGeoJson: function(paramName, geoJson) {
+  // we currently expect a single geometry or feature (ported from: Tasks.Query._setGeometry)
+  _setGeometry: function(paramName, geometry) {
     var processedInput = {
       "geometryType": "",
       "features": []
     };
 
-    //confirmed we handle raw GeoJSON geometries appropriately too, but what about 'feature' type objects outside of FeatureCollections or 'GeometryCollections'?
-    if (geoJson.type === "FeatureCollection") {
-      processedInput.geometryType = this.geoJsonTypeToArcGIS(geoJson.features[0].geometry.type);
-      processedInput.features = L.esri.Util.geojsonToArcGIS(geoJson);
-    } else if (geoJson.type === "Feature") {
-      processedInput.geometryType = this.geoJsonTypeToArcGIS(geoJson.geometry.type);
-      processedInput.features.push(L.esri.Util.geojsonToArcGIS(geoJson));
-    } else {
-      processedInput.geometryType = this.geoJsonTypeToArcGIS(geoJson.type);
-      processedInput.features.push({
-        "geometry": L.esri.Util.geojsonToArcGIS(geoJson)
-      });
+    // convert bounds to extent and finish
+    if ( geometry instanceof L.LatLngBounds ) {
+      // set geometry + type
+      processedInput.features.push({"geometry": L.esri.Util.boundsToExtent(geometry)});
+      processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
     }
-    this.params[paramName] = processedInput;
-  },
 
-  geoJsonTypeToArcGIS: function(geoJsonType) {
-    var arcgisGeometryType;
-    switch (geoJsonType) {
-      case "Point":
-        arcgisGeometryType = "esriGeometryPoint";
-        break;
-      case "LineString":
-        arcgisGeometryType = "esriGeometryPolyline";
-        break;
-      case "Polygon":
-        arcgisGeometryType = "esriGeometryPolygon";
-        break;
-      default:
-        console.error("unable to map geoJson geometry type to an arcgis geometry type");
+    // convert L.Marker > L.LatLng
+    if(geometry.getLatLng){
+      geometry = geometry.getLatLng();
     }
-    return arcgisGeometryType;
+
+    // convert L.LatLng to a geojson point and continue;
+    if (geometry instanceof L.LatLng) {
+      geometry = {
+        type: 'Point',
+        coordinates: [geometry.lng, geometry.lat]
+      };
+    }
+
+    // handle L.GeoJSON, pull out the first geometry
+    if ( geometry instanceof L.GeoJSON ) {
+      //reassign geometry to the GeoJSON value  (we are assuming that only one feature is present)
+      geometry = geometry.getLayers()[0].feature.geometry;
+      processedInput.features.push({"geometry": L.esri.Util.geojsonToArcGIS(geometry)});
+      processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
+    }
+
+    // Handle L.Polyline and L.Polygon
+    if (geometry.toGeoJSON) {
+      geometry = geometry.toGeoJSON();
+    }
+
+    // handle GeoJSON feature by pulling out the geometry
+    if ( geometry.type === 'Feature' ) {
+      // get the geometry of the geojson feature
+      geometry = geometry.geometry;
+    }
+
+    // confirm that our GeoJSON is a point, line or polygon
+    if ( geometry.type === 'Point' ||  geometry.type === 'LineString' || geometry.type === 'Polygon') {
+      processedInput.features.push({"geometry": L.esri.Util.geojsonToArcGIS(geometry)});
+      processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
+    }
+
+    // warn the user if we haven't found anything
+    /* global console */
+
+    else {
+      if(console && console.warn) {
+        console.warn('invalid geometry passed as GP input. Should be an L.LatLng, L.LatLngBounds, L.Marker or GeoJSON Point Line or Polygon object');
+      }
+    }
+
+    this.params[paramName] = processedInput;
+    return;
   },
 
   run: function(callback, context) {
@@ -162,6 +197,6 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
 });
 
-EsriLeafletGP.Tasks.geoprocessing = function(url, params) {
-  return new EsriLeafletGP.Tasks.Geoprocessing(url, params);
+EsriLeafletGP.Tasks.geoprocessing = function(params) {
+  return new EsriLeafletGP.Tasks.Geoprocessing(params);
 };

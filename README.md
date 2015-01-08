@@ -7,7 +7,7 @@ Esri Leaflet GP is a small series of API helpers and UI controls to interact wit
 Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Example
-Note that this plugin requires a minimum of esri-leaflet 1.0.0 Release Candidate 2.
+Note that the latest version of this plugin requires a minimum of esri-leaflet 1.0.0 Release Candidate 5.
 
 Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-leaflet-gp/index.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation-profile.html) to see it in action.
 
@@ -24,7 +24,7 @@ Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-l
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
   <!-- Esri Leaflet Core -->
-    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.4/esri-leaflet.js"></script>
+    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.5/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
   <script src="dist/esri-leaflet-gp.js"></script>
@@ -68,19 +68,14 @@ Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-l
   var gpService = new L.esri.GP.Services.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
   var gpTask = gpService.createTask();
 
-  gpTask.gpString("Drive_Times", "5 10");
+  gpTask.setParam("Drive_Times", "5 10");
 
   var driveTimes = new L.FeatureGroup();
   map.addLayer(driveTimes);
 
-  var mapClickGeoJson = { "type": "FeatureCollection", "features": []};
-  mapClickGeoJson.features.push({ "type":"Feature", "geometry":{"type":"Point"}});
-
   map.on('click', function(evt){
     driveTimes.clearLayers();
-    mapClickGeoJson.features[0].geometry.coordinates = [];
-    mapClickGeoJson.features[0].geometry.coordinates.push(evt.latlng.lng, evt.latlng.lat);
-    gpTask.gpGeoJson("Input_Location", mapClickGeoJson)
+    gpTask.setParam("Input_Location", evt.latlng)
     gpTask.run(driveTimeCallback);
   });
 
@@ -101,12 +96,13 @@ Take a look at this [calculate drivetime demo](https://jgravois.github.io/esri-l
 
 Constructor | Options | Description
 --- | --- | ---
-`new L.esri.GP.Services.Geoprocessing(url)`<br>`L.esri.Services.Service(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Service.
+`new L.esri.GP.Services.Geoprocessing(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Service.
 
 ### Options
 
 Option | Type | Default | Description
 --- | --- | --- | ---
+`url` | `String` | `` | The URL of the geoprocessing service you'd like to leverage.
 `path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical Geoprocessing services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
 `async` | `Boolean` | `false` | (Optional) Set 'async' to indicate whether a GP service with a custom operation name is synchronous or asynchronous.
 
@@ -137,10 +133,7 @@ L.esri.GP.Tasks.Geoprocessing accepts all L.esri.Tasks.Task options.
 
 Method | Returns | Description
 --- | --- | ---
-`gpString(<String> inputParamName, <String> value)` | `this` | Sets an input string parameter.
-`gpNumber(<String> inputParamName, <Number> value)` | `this` | Sets an input number parameter.
-`gpBoolean(<String> inputParamName, <Boolean> value)` | `this` | Sets an input boolean parameter.
-`gpGeoJson(<String> inputParamName, <GeoJson> value)` | `this` | Converts a GeoJson geometry or FeatureCollection into GeoServices json before setting the input parameter.
+`setParam(<String> inputParamName, <String||Boolean||Number||Geometry> value)` | `this` | Sets an input parameter.  L.LatLng, L.Marker, L.LatLngBounds, and L.GeoJSON (both Features and Geometries) will be converted to [GeoServices](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Geometry_objects/02r3000000n1000000/) JSON automatically.
 `run(<Function> callback)` | `this` | Calls the corresponding Geoprocessing service, passing the previously supplied input parameters.
 `gpAsyncResultParam(<String> resultParamName, <Object> value)` | `this` | Sets a result parameter for Asynchronous geoprocessing services that require it.
 
@@ -150,7 +143,7 @@ A single result from the geoprocessing service. You should not rely on all these
 
 Property | Type | Description
 --- | --- | ---
-`features` | [`L.geoJson`] | An array of geoJson features.
+`features` | [`L.GeoJSON`] | An array of GeoJSON features.
 `result` | `<object>`| A result object typically containing a link to the url of an output file written to disk on the server.
 
 #### GP Results
@@ -160,7 +153,7 @@ Geoprocessing results conform to the following format
 ```json
 [
   {
-    "features": [L.geoJson],
+    "features": [L.GeoJSON],
     "result":{
       "paramName": "Output_File",
       "dataType": "GPDataFile",

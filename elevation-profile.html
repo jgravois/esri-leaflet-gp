@@ -14,9 +14,9 @@
   <script src="//leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.4/esri-leaflet.js"></script>
+  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.5/esri-leaflet.js"></script>
 
-  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-beta.2.js"></script>
+  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-beta.3.js"></script>
   <style>
     body {
       margin:0;
@@ -76,18 +76,19 @@
       layer = e.layer;
     drawnItems.addLayer(layer);
     var inputLine = layer.toGeoJSON();
-    gpTask.gpGeoJson("InputLineFeatures", inputLine);
+    gpTask.setParam("InputLineFeatures", inputLine);
     gpTask.run(addGPResultToMap);
     document.getElementById('info-pane').innerHTML = "working..."
   });
 
-  var gpService = new L.esri.GP.Services.Geoprocessing("http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile");
+  var gpService = new L.esri.GP.Services.Geoprocessing({url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile"}
+  );
   var gpTask = gpService.createTask();
 
-  gpTask.gpString("DEMResolution", "FINEST");
-  gpTask.gpString("ProfileIdField", "OID");
-  gpTask.gpNumber("MaximumSampleDistance", 50000);
-  gpTask.gpBoolean("returnZ", true);
+  gpTask.setParam("DEMResolution", "FINEST")
+    .setParam("ProfileIdField", "OID")
+    .setParam("MaximumSampleDistance", 50000)
+    .setParam("returnZ", true);
 
   //haven't figured out why 'error' isn't retrieved in first position
   function addGPResultToMap(error, result, raw) {

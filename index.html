@@ -8,9 +8,9 @@
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
-  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.4/esri-leaflet.js"></script>
+  <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.5/esri-leaflet.js"></script>
 
-  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-beta.2.js"></script>
+  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-beta.3.js"></script>
 
   <style>
     body {
@@ -53,20 +53,15 @@
 
   var gpTask = gpService.createTask();
 
-  gpTask.gpString("Drive_Times", "1 2");
+  gpTask.setParam("Drive_Times", "1 2");
 
   var driveTimes = new L.FeatureGroup();
   map.addLayer(driveTimes);
 
-  var mapClickGeoJson = { "type": "FeatureCollection", "features": []};
-  mapClickGeoJson.features.push({ "type":"Feature", "geometry":{"type":"Point"}});
-
   map.on('click', function(evt){
     document.getElementById('info-pane').innerHTML = 'working...';
     driveTimes.clearLayers();
-    mapClickGeoJson.features[0].geometry.coordinates = [];
-    mapClickGeoJson.features[0].geometry.coordinates.push(evt.latlng.lng, evt.latlng.lat);
-    gpTask.gpGeoJson("Input_Location", mapClickGeoJson)
+    gpTask.setParam("Input_Location", evt.latlng)
     gpTask.run(driveTimeCallback);
   });
 
