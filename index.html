@@ -49,7 +49,10 @@
 
   L.esri.basemapLayer('Gray').addTo(map);
 
-  var gpService = new L.esri.GP.Services.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+  var gpService = new L.esri.GP.Services.Geoprocessing({
+    url: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
+    useCors:false
+  });
 
   var gpTask = gpService.createTask();
 
