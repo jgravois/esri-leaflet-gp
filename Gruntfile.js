@@ -9,14 +9,12 @@ module.exports = function(grunt) {
       options: {
         jshintrc: '.jshintrc',
         ignore_warning: {
-        options: {
+          options: {
             '-W098': false,
           },
           src: ['src/EsriLeafletGP.js'],
         }
       },
-
-      //all: ['src/**/*.js']
       all: ['src/Tasks/Geoprocessing.js', 'src/Services/Geoprocessing.js']
     },
     concat: {
