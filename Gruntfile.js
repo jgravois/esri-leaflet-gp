@@ -2,9 +2,23 @@ var fs = require('fs');
 
 module.exports = function(grunt) {
 
+  var browsers = grunt.option('browser') ? grunt.option('browser').split(',') : ['PhantomJS'];
+
+  var copyright = '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+                   '*   Copyright (c) <%= grunt.template.today("yyyy") %> Environmental Systems Research Institute, Inc.\n' +
+                   '*   Apache 2.0 License ' +
+                   '*/\n\n';
+
+  var files = [
+    'src/EsriLeafletGP.js',
+    'src/Services/Geoprocessing.js',
+    'src/Tasks/Geoprocessing.js'
+  ];
+
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+
     jshint: {
       options: {
         jshintrc: '.jshintrc',
@@ -17,12 +31,12 @@ module.exports = function(grunt) {
       },
       all: ['src/Tasks/Geoprocessing.js', 'src/Services/Geoprocessing.js']
     },
+
     concat: {
       options: {
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '*   Copyright (c) <%= grunt.template.today("yyyy") %> Environmental Systems Research Institute, Inc.\n' +
-        '*   Apache 2.0 License ' +
-        '*/\n\n'
+        sourceMap: true,
+        separator: '\n\n',
+        banner: copyright
       },
       js: {
         src: [
@@ -33,6 +47,7 @@ module.exports = function(grunt) {
         dest: 'dist/esri-leaflet-gp-src.js'
       }
     },
+
     uglify: {
       options: {
         wrap: false,
@@ -47,6 +62,49 @@ module.exports = function(grunt) {
         }
       }
     },
+
+    karma: {
+      options: {
+        configFile: 'karma.conf.js'
+      },
+      run: {
+        reporters: ['progress'],
+        browsers: browsers
+      },
+      coverage: {
+        reporters: ['progress', 'coverage'],
+        browsers: browsers,
+        preprocessors: {
+          'src/**/*.js': 'coverage'
+        }
+      },
+      watch: {
+        singleRun: false,
+        autoWatch: true,
+        browsers: browsers
+      }
+    },
+
+    watch: {
+      scripts: {
+        files: [
+          'src/**/*.js',
+          'src/*.js'
+        ],
+        tasks: ['jshint'],
+        options: {
+          spawn: false
+        }
+      }
+    },
+
+    concurrent: {
+      options: {
+        logConcurrentOutput: true
+      },
+      dev: ['watch:scripts', 'karma:watch']
+    },
+
     s3: {
       options: {
         key: '<%= aws.key %>',
@@ -83,6 +141,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['build']);
   grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
+  grunt.registerTask('test', ['jshint', 'karma:run']);
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -91,5 +150,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-s3');
+  grunt.loadNpmTasks('grunt-karma');
 
 };

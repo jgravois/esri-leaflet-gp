@@ -1,6 +1,6 @@
 # Esri Leaflet GP
 
-Esri Leaflet GP is a small series of API helpers and UI controls to interact with geoprocessing services published with ArcGIS Server
+Esri Leaflet GP is an API helper to interact with geoprocessing services published with ArcGIS Server
 
 **Currently Esri Leaflet GP is in development and should be thought of as a beta or preview**
 
