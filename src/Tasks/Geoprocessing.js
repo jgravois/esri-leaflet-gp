@@ -18,24 +18,24 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
       //the parameters below seem wonky to me, but work for both CORS and JSONP requests
       this._service.metadata(function(error, results) {
         if (!error) {
-          if (results.executionType === "esriExecutionTypeSynchronous") {
+          if (results.executionType === 'esriExecutionTypeSynchronous') {
             this.options.async = false;
-            this.options.path = "execute";
+            this.options.path = 'execute';
           } else {
             this.options.async = true;
-            this.options.path = "submitJob";
+            this.options.path = 'submitJob';
           }
         } else {
           //if check fails, hopefully its synchronous
           this.options.async = false;
-          this.options.path = "execute";
+          this.options.path = 'execute';
           return;
         }
       }, this);
     }
     else {
       //if path is custom, hopefully its synchronous
-      if (this.options.async !== true && this.options.path !== "submitJob") {
+      if (this.options.async !== true && this.options.path !=='submitJob') {
         this.options.async = false;
       }
     }
@@ -47,12 +47,12 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
   //set booleans, numbers, strings
   setParam: function(paramName, paramValue) {
 
-    if (typeof paramValue === "boolean") {
+    if (typeof paramValue === 'boolean') {
       this.params[paramName] = paramValue;
       return;
     }
     //strings, numbers
-    else if (typeof paramValue !== "object") {
+    else if (typeof paramValue !== 'object') {
       this.params[paramName] = paramValue;
       return;
     }
@@ -79,14 +79,14 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
   // we currently expect a single geometry or feature (ported from: Tasks.Query._setGeometry)
   _setGeometry: function(paramName, geometry) {
     var processedInput = {
-      "geometryType": "",
-      "features": []
+      'geometryType': '',
+      'features': []
     };
 
     // convert bounds to extent and finish
     if ( geometry instanceof L.LatLngBounds ) {
       // set geometry + type
-      processedInput.features.push({"geometry": L.esri.Util.boundsToExtent(geometry)});
+      processedInput.features.push({'geometry': L.esri.Util.boundsToExtent(geometry)});
       processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
     }
 
@@ -107,7 +107,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     if ( geometry instanceof L.GeoJSON ) {
       //reassign geometry to the GeoJSON value  (we are assuming that only one feature is present)
       geometry = geometry.getLayers()[0].feature.geometry;
-      processedInput.features.push({"geometry": L.esri.Util.geojsonToArcGIS(geometry)});
+      processedInput.features.push({'geometry': L.esri.Util.geojsonToArcGIS(geometry)});
       processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
     }
 
@@ -124,7 +124,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
     // confirm that our GeoJSON is a point, line or polygon
     if ( geometry.type === 'Point' ||  geometry.type === 'LineString' || geometry.type === 'Polygon') {
-      processedInput.features.push({"geometry": L.esri.Util.geojsonToArcGIS(geometry)});
+      processedInput.features.push({'geometry': L.esri.Util.geojsonToArcGIS(geometry)});
       processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
     }
 
@@ -157,15 +157,15 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
   checkJob: function(jobId, callback, context) {
     var pollJob = function() {
-      this.request("/jobs/" + jobId, {}, function polledJob(error, response) {
-        if (response.jobStatus === "esriJobSucceeded") {
-          this.request("/jobs/" + jobId + "/results/OutputProfile", this.resultParams, function processJobResult(error, response) {
+      this.request('/jobs/' + jobId, {}, function polledJob(error, response) {
+        if (response.jobStatus === 'esriJobSucceeded') {
+          this.request('/jobs/' + jobId + '/results/OutputProfile', this.resultParams, function processJobResult(error, response) {
             callback.call(context, error, (response && this.processGPOutput(response)), response);
 
           }, this);
           window.clearInterval(counter);
-        } else if (response.jobStatus === "esriJobFailed") {
-          callback.call(context, "Job Failed", null);
+        } else if (response.jobStatus === 'esriJobFailed') {
+          callback.call(context, 'Job Failed', null);
           window.clearInterval(counter);
         }
       }, this);
@@ -188,7 +188,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     if (responseValue.features) {
       var featureCollection = L.esri.Util.responseToFeatureCollection(responseValue);
       processedResponse.features = featureCollection.features;
-    } else if (response.results[0].dataType === "GPDataFile") {
+    } else if (response.results[0].dataType === 'GPDataFile') {
       processedResponse.result = response.results[0];
     }
     //do we need to be able to pass back output booleans? strings? numbers?

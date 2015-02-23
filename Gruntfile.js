@@ -7,25 +7,9 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
       options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef:  true,
-        boss: true,
-        eqnull: true,
-        browser: true,
-        globals: {
-          XMLHttpRequest: true,
-          ActiveXObject: true,
-          module: true,
-          L:true
-        }
+        jshintrc: '.jshintrc'
       },
-      all: ['src/**/*.js']
+      all: ['src/*.js', 'src/**/*.js']
     },
     concat: {
       options: {
@@ -36,7 +20,7 @@ module.exports = function(grunt) {
       },
       js: {
         src: [
-          'src/esri-leaflet-gp.js',
+          'src/EsriLeafletGP.js',
           'src/Services/Geoprocessing.js',
           'src/Tasks/Geoprocessing.js'
         ],
