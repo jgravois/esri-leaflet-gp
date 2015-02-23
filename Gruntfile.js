@@ -7,9 +7,17 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
       options: {
-        jshintrc: '.jshintrc'
+        jshintrc: '.jshintrc',
+        ignore_warning: {
+        options: {
+            '-W098': false,
+          },
+          src: ['src/EsriLeafletGP.js'],
+        }
       },
-      all: ['src/*.js', 'src/**/*.js']
+
+      //all: ['src/**/*.js']
+      all: ['src/Tasks/Geoprocessing.js', 'src/Services/Geoprocessing.js']
     },
     concat: {
       options: {
