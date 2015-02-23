@@ -1,0 +1,76 @@
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>drivetimes</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load Leaflet -->
+  <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+  <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
+
+  <!-- Load Esri Leaflet -->
+  <script src="../node_modules/esri-leaflet/dist/esri-leaflet-src.js"></script>
+
+  <script src="../src/EsriLeafletGP.js"></script>
+  <script src="../src/Services/Geoprocessing.js"></script>
+  <script src="../src/Tasks/Geoprocessing.js"></script>
+
+  <style>
+    body {margin:0;padding:0;}
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+    #info-pane {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      padding: 1em;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+  <label>
+  click on the map to calculate 1 and 2 minute drivetimes
+  </label>
+</div>
+
+<script>
+  var map = L.map('map').setView([42.36, -71.06], 13);
+
+  L.esri.basemapLayer('Gray').addTo(map);
+
+  var gpService = new L.esri.GP.Services.Geoprocessing({
+    url: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
+    useCors:false
+  });
+
+  var gpTask = gpService.createTask();
+
+  gpTask.setParam("Drive_Times", "1 2");
+
+  var driveTimes = new L.FeatureGroup();
+  map.addLayer(driveTimes);
+
+  map.on('click', function(evt){
+    document.getElementById('info-pane').innerHTML = 'working...';
+    driveTimes.clearLayers();
+    gpTask.setParam("Input_Location", evt.latlng)
+    gpTask.run(driveTimeCallback);
+  });
+
+  function driveTimeCallback(error, response, raw){
+    document.getElementById('info-pane').innerHTML = 'click on the map to calculate 1 and 2 minute drivetimes';
+    driveTimes.addLayer(L.geoJson(response));
+  }
+</script>
+
+</body>
+</html>
