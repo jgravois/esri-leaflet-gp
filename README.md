@@ -7,7 +7,7 @@ Esri Leaflet GP is an API helper for interacting with geoprocessing services pub
 Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Example
-Note that the latest version of this plugin requires a minimum of esri-leaflet 1.0.0 Release Candidate 5.
+Note that the latest version of this plugin requires a minimum of esri-leaflet [1.0.0 RC5](https://github.com/Esri/esri-leaflet/releases/tag/v1.0.0-rc.5).
 
 Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation-profile.html) to see it in action.
 
@@ -103,7 +103,7 @@ Constructor | Options | Description
 Option | Type | Default | Description
 --- | --- | --- | ---
 `url` | `String` | `` | The URL of the geoprocessing service you'd like to leverage.
-`path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical Geoprocessing services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
+`path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical [Geoprocessing](http://server.arcgis.com/en/server/latest/publish-services/windows/a-quick-tour-of-authoring-geoprocessing-services.htm) services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
 `async` | `Boolean` | `false` | (Optional) Set 'async' to indicate whether a GP service with a custom operation name is synchronous or asynchronous.
 
 L.esri.GP.Services.Geoprocessing also accepts all L.esri.Services.Service options.
@@ -153,7 +153,7 @@ Geoprocessing results conform to the following format
 ```json
 [
   {
-    "features": [L.GeoJSON],
+    "features": [`L.GeoJSON`],
     "result":{
       "paramName": "Output_File",
       "dataType": "GPDataFile",
@@ -170,12 +170,12 @@ Geoprocessing results conform to the following format
 1. [Fork and clone Esri Leaflet GP](https://help.github.com/articles/fork-a-repo)
 2. `cd` into the `esri-leaflet-gp` folder
 5. Install the dependencies with `npm install`
-5. The example at `/index.html` should work
+5. The 'elevation-profile.html' example should 'just work'
 6. Make your changes and create a [pull request](https://help.github.com/articles/creating-a-pull-request)
 
 ## Dependencies
 
-Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can fine out more about teh Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
+Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about Esri Leaflet on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Resources
 
@@ -202,7 +202,7 @@ Signup for an [ArcGIS for Developers account](https://developers.arcgis.com/en/p
 This information is from the [ArcGIS for Developers Terms of Use FAQ](https://developers.arcgis.com/en/terms/faq/)
 
 ## Licensing
-Copyright 2014 Esri
+Copyright 2015 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
