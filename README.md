@@ -1,6 +1,6 @@
 # Esri Leaflet GP
 
-Esri Leaflet GP is an API helper to interact with geoprocessing services published with ArcGIS Server
+Esri Leaflet GP is an API helper for interacting with geoprocessing services published with ArcGIS Server and the analysis services hosted in ArcGIS Online.
 
 **Currently Esri Leaflet GP is in development and should be thought of as a beta or preview**
 
@@ -79,7 +79,7 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
     gpTask.run(driveTimeCallback);
   });
 
-  function driveTimeCallback(response, raw, error){
+  function driveTimeCallback(error, response, raw){
     driveTimes.addLayer(L.geoJson(response));
   }
 
