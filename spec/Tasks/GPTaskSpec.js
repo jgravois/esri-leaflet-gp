@@ -14,9 +14,8 @@ describe('L.esri.GP.Tasks.Geoprocessing', function () {
 
   var map = createMap();
 
-  var anythingElse;
-
   var task;
+  var service;
 
   var bounds = L.latLngBounds([[45.5, -122.66],[ 45.51, -122.65]]);
   var latlng = L.latLng(45.51, -122.66);
@@ -131,17 +130,29 @@ describe('L.esri.GP.Tasks.Geoprocessing', function () {
 
   beforeEach(function(){
     server = sinon.fakeServer.create();
-    task = L.esri.Tasks.query({url: featureLayerUrl});
+    service = new L.esri.GP.Services.Geoprocessing({url: gpServiceUrl});
+
   });
 
   afterEach(function(){
     server.restore();
+    service = null;
+  });
+
+  it("should be able to instantiate a task from a service", function () {
+    var gpTask = service.createTask();
+    expect(gpTask.options.useCors).to.be.eq(true);
+    expect(gpTask.params).to.be.a('object');
   });
 
   it("should be able to determine if a service is sync or async", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+
     //make sure requst URL operation name isn't malformed
-    expect(1).to.be.eq(1);
+    gpTask = service.createTask();
+    gpTask.on('initialized', function(){
+      expect(gpTask.options.async).to.be.eq(false);
+      expect(gpTask.options.path).to.be.eq("execute");
+    });
   });
 
   it("should make appropriate requests when a custom path is supplied", function () {

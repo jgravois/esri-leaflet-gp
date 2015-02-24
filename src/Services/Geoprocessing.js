@@ -2,6 +2,7 @@ EsriLeafletGP.Services.Geoprocessing = Esri.Services.Service.extend({
   options: {},
 
   createTask: function(){
+    this.fire('load',{foo:"bar"});
     return new EsriLeafletGP.Tasks.Geoprocessing(this, this.options);
   }
 });

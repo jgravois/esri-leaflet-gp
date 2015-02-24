@@ -5,6 +5,9 @@ setParam([])
 */
 
 EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
+
+  includes: L.Mixin.Events,
+
   //setters: {}, we don't use these because we don't know the ParamName OR value of custom GP services
   params: {},
   resultParams: {},
@@ -17,6 +20,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     if (!this.options.path) {
       //the parameters below seem wonky to me, but work for both CORS and JSONP requests
       this._service.metadata(function(error, results) {
+
         if (!error) {
           if (results.executionType === 'esriExecutionTypeSynchronous') {
             this.options.async = false;
@@ -25,6 +29,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
             this.options.async = true;
             this.options.path = 'submitJob';
           }
+          this.fire('initialized');
         } else {
           //if check fails, hopefully its synchronous
           this.options.async = false;
@@ -39,6 +44,8 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
         this.options.async = false;
       }
     }
+
+    //this.fire('initialized', {foo: 'bar'});
   },
 
   //doc for various GPInput types can be found here
@@ -46,7 +53,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
   //set booleans, numbers, strings
   setParam: function(paramName, paramValue) {
-
+    this.fire('param-set', {foo: 'bar'});
     if (typeof paramValue === 'boolean') {
       this.params[paramName] = paramValue;
       return;
@@ -128,9 +135,6 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
       processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
     }
 
-    // warn the user if we haven't found anything
-    /* global console */
-
     else {
       if(console && console.warn) {
         console.warn('invalid geometry passed as GP input. Should be an L.LatLng, L.LatLngBounds, L.Marker or GeoJSON Point Line or Polygon object');
@@ -194,6 +198,16 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     //do we need to be able to pass back output booleans? strings? numbers?
     return processedResponse;
   }
+
+  // from https://github.com/Leaflet/Leaflet/blob/v0.7.2/src/layer/FeatureGroup.js
+  // @TODO remove at Leaflet 0.8
+  // _propagateEvent: function (e) {
+  //   e = L.extend({
+  //     layer: e.target,
+  //     target: this
+  //   }, e);
+  //   this.fire(e.type, e);
+  // }
 
 });
 

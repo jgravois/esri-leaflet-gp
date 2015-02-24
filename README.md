@@ -153,7 +153,7 @@ Geoprocessing results conform to the following format
 ```json
 [
   {
-    "features": [`L.GeoJSON`],
+    "features": ['L.GeoJSON'],
     "result":{
       "paramName": "Output_File",
       "dataType": "GPDataFile",
@@ -175,7 +175,7 @@ Geoprocessing results conform to the following format
 
 ## Dependencies
 
-Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about Esri Leaflet on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
+Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when necessary. You can find out more about Esri Leaflet from the [Esri Leaflet Quickstart](http://esri.github.io/esri-leaflet/examples/).
 
 ## Resources
 
