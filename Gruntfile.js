@@ -52,7 +52,10 @@ module.exports = function(grunt) {
       options: {
         wrap: false,
         preserveComments: 'some',
-        report: 'gzip'
+        report: 'gzip',
+        banner: copyright,
+        sourceMap: true,
+        sourceMapIncludeSources: true
       },
       dist: {
         files: {
@@ -122,12 +125,19 @@ module.exports = function(grunt) {
           {
             src: 'dist/*',
             dest: 'esri-leaflet-gp/<%= pkg.version %>/'
-          },
-          {
-            src: 'dist/img/*',
-            dest: 'esri-leaflet-gp/<%= pkg.version %>/img'
           }
         ]
+      }
+    },
+
+    releaseable: {
+      release: {
+        options: {
+          remote: 'upstream',
+          dryRun: grunt.option('dryRun') ? grunt.option('dryRun') : false,
+          silent: false
+        },
+        src: [ 'dist/**/*.js','dist/**/*.map' ]
       }
     }
 
@@ -142,6 +152,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['build']);
   grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
   grunt.registerTask('test', ['jshint', 'karma:run']);
+  grunt.registerTask('release', ['releaseable', 's3']);
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
