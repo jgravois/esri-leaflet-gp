@@ -24,10 +24,10 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
   <!-- Esri Leaflet Core -->
-    <script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.5/esri-leaflet.js"></script>
+    <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.6/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="https://dl.dropboxusercontent.com/u/59331579/0.7.3/esri-leaflet-gp-0.0.1-alpha.3.js"></script>
+  <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet-gp/0.0.1-alpha.3/esri-leaflet-gp.js"></script>
 
   <style>
     body {
