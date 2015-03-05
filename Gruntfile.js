@@ -133,7 +133,7 @@ module.exports = function(grunt) {
     releaseable: {
       release: {
         options: {
-          remote: 'upstream',
+          remote: 'origin',
           dryRun: grunt.option('dryRun') ? grunt.option('dryRun') : false,
           silent: false
         },
@@ -162,5 +162,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-s3');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-releaseable');
 
 };
