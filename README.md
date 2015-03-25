@@ -106,6 +106,27 @@ Option | Type | Default | Description
 `path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical [Geoprocessing](http://server.arcgis.com/en/server/latest/publish-services/windows/a-quick-tour-of-authoring-geoprocessing-services.htm) services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
 `async` | `Boolean` | `false` | (Optional) Set 'async' to indicate whether a GP service with a custom operation name is synchronous or asynchronous.
 
+Note: By default, the plugin assumes services are synchronous and that 'execute' is the appropriate path.
+
+If you are working with an asynchronous service or one with a custom operation name and don't supply this information in the constructor, you'll have to leave enough time to make a roundtrip to the server and gather the information before calling GP.Tasks.Geoprocessing.run().
+
+The 'initialized' event is intended to help with this.
+
+```
+var myService = new L.esri.GP.Services.Geoprocessing({
+    url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationAsync/GPServer/Profile"
+  });
+var myTask = myService.createTask();
+
+myTask.on('initialized', function(){
+  myTask.setParam("inputFeature", polyline.toGeoJSON());
+  myTask.run(function(error, geojson, response){
+    ...
+  });
+})
+
+```
+
 L.esri.GP.Services.Geoprocessing also accepts all L.esri.Services.Service options.
 
 ### Methods

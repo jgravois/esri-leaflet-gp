@@ -17,6 +17,10 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
     //if path isn't supplied in options, try and determine if its sync or async to set automatically
     if (!this.options.path) {
+      //assume initially, that service is synchronous
+      this.options.async = false;
+      this.options.path = 'execute';
+
       //the parameters below seem wonky to me, but work for both CORS and JSONP requests
       this._service.metadata(function(error, results) {
         if (!error) {
