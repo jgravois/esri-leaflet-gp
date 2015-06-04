@@ -160,9 +160,9 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
   checkJob: function(jobId, callback, context) {
     var pollJob = function() {
-      this.request('/jobs/' + jobId, {}, function polledJob(error, response) {
+      this._service.request('/jobs/' + jobId, {}, function polledJob(error, response) {
         if (response.jobStatus === 'esriJobSucceeded') {
-          this.request('/jobs/' + jobId + '/results/OutputProfile', this.resultParams, function processJobResult(error, response) {
+          this._service.request('/jobs/' + jobId + '/results/OutputProfile', this.resultParams, function processJobResult(error, response) {
             callback.call(context, error, (response && this.processGPOutput(response)), response);
 
           }, this);
