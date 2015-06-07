@@ -155,6 +155,7 @@ L.esri.GP.Tasks.Geoprocessing accepts all L.esri.Tasks.Task options.
 Method | Returns | Description
 --- | --- | ---
 `setParam(<String> inputParamName, <String||Boolean||Number||Geometry> value)` | `this` | Sets an input parameter.  L.LatLng, L.Marker, L.LatLngBounds, and L.GeoJSON (both Features and Geometries) will be converted to [GeoServices](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Geometry_objects/02r3000000n1000000/) JSON automatically.
+`setOutputParam(<String> outputParamName)` | `this` | Only applicable for asynchronous services.  Nofifies the plugin of the parameter name so that it knows where to retrieve output.
 `run(<Function> callback)` | `this` | Calls the corresponding Geoprocessing service, passing the previously supplied input parameters.
 `gpAsyncResultParam(<String> resultParamName, <Object> value)` | `this` | Sets a result parameter for Asynchronous geoprocessing services that require it.
 

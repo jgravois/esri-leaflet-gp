@@ -77,7 +77,13 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
   //   }
   // },
 
-  //necessary because of the design requirement that resultParams be specified for async elevation services in order to get Zs (unnecessarily confusing)
+  // give developer opportunity to point out where the output is going to be available
+  setOutputParam: function(paramName) {
+    this.params.outputParam = paramName;
+  },
+
+  /* necessary because of the design requirement that resultParams be specified
+  for async elevation services in order to get Zs (unnecessarily confusing)*/
   gpAsyncResultParam: function(paramName, paramValue) {
     this.resultParams[paramName] = paramValue;
   },
@@ -146,6 +152,8 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
   run: function(callback, context) {
     var jobId;
+    this._done = false;
+
     if (this.options.async === true) {
       this._service.request(this.options.path, this.params, function(error, response) {
         jobId = response.jobId;
@@ -160,12 +168,14 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
   checkJob: function(jobId, callback, context) {
     var pollJob = function() {
-      this._service.request('/jobs/' + jobId, {}, function polledJob(error, response) {
+      this._service.request('jobs/' + jobId, {}, function polledJob(error, response) {
         if (response.jobStatus === 'esriJobSucceeded') {
-          this._service.request('/jobs/' + jobId + '/results/OutputProfile', this.resultParams, function processJobResult(error, response) {
-            callback.call(context, error, (response && this.processGPOutput(response)), response);
-
-          }, this);
+          if (!this._done){
+            this._done = true;
+            this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
+              callback.call(context, error, (response && this.processGPOutput(response)), response);
+            }, this);
+          }
           window.clearInterval(counter);
         } else if (response.jobStatus === 'esriJobFailed') {
           callback.call(context, 'Job Failed', null);
