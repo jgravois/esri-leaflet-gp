@@ -105,6 +105,7 @@ Option | Type | Default | Description
 `url` | `String` | `` | The URL of the geoprocessing service you'd like to leverage.
 `path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical [Geoprocessing](http://server.arcgis.com/en/server/latest/publish-services/windows/a-quick-tour-of-authoring-geoprocessing-services.htm) services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
 `async` | `Boolean` | `false` | (Optional) Set 'async' to indicate whether a GP service with a custom operation name is synchronous or asynchronous.
+`asyncInterval` | `Integer` | `1` | (Optional) How often the application should check on jobs in progress.
 
 Note: By default, the plugin assumes services are synchronous and that 'execute' is the appropriate path.
 

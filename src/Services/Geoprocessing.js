@@ -1,5 +1,7 @@
 EsriLeafletGP.Services.Geoprocessing = Esri.Services.Service.extend({
-  options: {},
+  options: {
+    asyncInterval: 1
+  },
 
   createTask: function(){
     return new EsriLeafletGP.Tasks.Geoprocessing(this, this.options);
