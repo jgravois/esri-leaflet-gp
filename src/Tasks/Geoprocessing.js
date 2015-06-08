@@ -157,8 +157,8 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
     if (this.options.async === true) {
       this._service.request(this.options.path, this.params, function(error, response) {
-        jobId = response.jobId;
-        this.checkJob(jobId, callback, context);
+        this._currentJobId = response.jobId;
+        this.checkJob(this._currentJobId, callback, context);
       }, this);
     } else {
       return this._service.request(this.options.path, this.params, function(error, response) {
@@ -197,6 +197,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
       responseValue = response.results[0].value;
     } else {
       responseValue = response.value;
+      processedResponse.jobId = this._currentJobId;
     }
 
     if (responseValue.features) {
