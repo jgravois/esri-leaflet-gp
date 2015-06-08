@@ -24,10 +24,11 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
   <!-- Esri Leaflet Core -->
-    <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.6/esri-leaflet.js"></script>
+  <script src="http://cdn.jsdelivr.net/leaflet.esri/1.0.0-rc.8/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet-gp/0.0.1-alpha.3/esri-leaflet-gp.js"></script>
+  <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet-gp/0.0.1-beta.1/esri-leaflet-gp.js"></script>
+
 
   <style>
     body {
@@ -65,7 +66,10 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
 
   L.esri.basemapLayer('NationalGeographic').addTo(map);
 
-  var gpService = new L.esri.GP.Services.Geoprocessing("http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons", {useCors:false});
+  var gpService = new L.esri.GP.Services.Geoprocessing({
+    url: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
+    useCors:false
+  });
   var gpTask = gpService.createTask();
 
   gpTask.setParam("Drive_Times", "5 10");
