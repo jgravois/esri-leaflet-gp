@@ -152,7 +152,6 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
   },
 
   run: function(callback, context) {
-    var jobId;
     this._done = false;
 
     if (this.options.async === true) {

@@ -166,8 +166,9 @@ A single result from the geoprocessing service. You should not rely on all these
 
 Property | Type | Description
 --- | --- | ---
+`jobId` | [`<String>`] | ID of processed job (only applicable for asynchronous services).
 `features` | [`L.GeoJSON`] | An array of GeoJSON features.
-`result` | `<object>`| A result object typically containing a link to the url of an output file written to disk on the server.
+`result` | `<Object>`| A result object typically containing a link to the url of an output file written to disk on the server.
 
 #### GP Results
 
