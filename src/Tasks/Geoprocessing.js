@@ -24,6 +24,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
       //the parameters below seem wonky to me, but work for both CORS and JSONP requests
       this._service.metadata(function(error, results) {
         if (!error) {
+          console.log(results);
           if (results.executionType === 'esriExecutionTypeSynchronous') {
             this.options.async = false;
             this.options.path = 'execute';
@@ -184,7 +185,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
       }, this);
     }.bind(this);
 
-    var counter = window.setInterval(pollJob, 1000);
+    var counter = window.setInterval(pollJob, this._service.options.asyncInterval*1000);
 
   },
 
