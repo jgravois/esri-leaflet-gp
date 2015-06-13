@@ -83,6 +83,10 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     this.params.outputParam = paramName;
   },
 
+  setOutputType: function(paramType){
+    this.params.outputType = paramType;
+  },
+
   /* necessary because of the design requirement that resultParams be specified
   for async elevation services in order to get Zs (unnecessarily confusing)*/
   gpAsyncResultParam: function(paramName, paramValue) {
@@ -170,11 +174,25 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     var pollJob = function() {
       this._service.request('jobs/' + jobId, {}, function polledJob(error, response) {
         if (response.jobStatus === 'esriJobSucceeded') {
+          
           if (!this._done){
             this._done = true;
-            this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
-              callback.call(context, error, (response && this.processGPOutput(response)), response);
-            }, this);
+
+            if (this.params.outputType === 'MapService'){                        
+              var baseURL = this._service.options.url;
+              var n = baseURL.indexOf('GPServer');
+              this.outputMapService = baseURL.slice(0,n)+'MapServer/'+'jobs/'+jobId;
+
+              this._service.request('jobs/' + jobId, this.resultParams, function processJobResult(error, response) {
+                callback.call(error, response);
+              }, this);
+              
+            }
+            else {
+              this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
+                callback.call(context, error, (response && this.processGPOutput(response)), response);
+              }, this);  
+            }
           }
           window.clearInterval(counter);
         } else if (response.jobStatus === 'esriJobFailed') {
@@ -191,6 +209,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
   processGPOutput: function(response) {
     var processedResponse = {};
     var responseValue;
+
 
     if (this.options.async === false) {
       responseValue = response.results[0].value;
