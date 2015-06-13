@@ -1,0 +1,80 @@
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>Leverage a Geoprocessing Service</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
+  <script src="node_modules/leaflet/dist/leaflet.js"></script>
+
+  <!-- Load Esri Leaflet from CDN -->
+  <!-- we encourage you to replace 'latest' with a hardcode version number (like '1.0.0-rc.7') in production applications -->
+  <script src="node_modules/esri-leaflet/dist/esri-leaflet.js"></script>
+
+  <style>
+    body { margin:0; padding:0; }
+    #map { position: absolute; top:0; bottom:0; right:0; left:0; }
+  </style>
+</head>
+<body>
+
+<script src="dist/esri-leaflet-gp-src.js"></script>
+
+<style>
+  #info-pane {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    padding: 1em;
+    background: white;
+  }
+</style>
+
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+  <label>
+  click on the map to get<br>the raster.
+  </label>
+</div>
+
+<script type='text/javascript'>
+  var map = L.map('map').setView([45.466, -122.81], 12);
+
+  L.esri.basemapLayer('Gray').addTo(map);
+
+  var gpService = new L.esri.GP.Services.Geoprocessing({
+    url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/911CallsHotspot/GPServer/911%20Calls%20Hotspot",
+    useCors:true,
+    async: true,
+    asyncInterval: 5
+  });
+
+  var gpTask = gpService.createTask()
+
+  gpTask.setParam("Query", "(Date >= date '1998-01-01 12:00:00' and Date <= date '1998-01-07 12:00:00') AND (Day = 'SUN' OR Day= 'SAT' OR Day = 'FRI' OR Day ='MON' OR Day='TUE' OR Day='WED' OR Day ='THU')");
+
+  gpTask.setOutputType("MapService");
+
+  gpTask.setOutputParam("Hotspot_Raster");
+
+
+  map.on('click', function(evt){
+    document.getElementById('info-pane').innerHTML = 'working...';
+      gpTask.run(getRaster);
+  });
+
+  function getRaster(){
+    L.esri.dynamicMapLayer(gpTask.outputMapService,{
+      layers:[1]
+    }).addTo(map);
+  }
+
+
+
+
+</script>
+
+</body>
+</html>
