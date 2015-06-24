@@ -83,9 +83,6 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     this.params.outputParam = paramName;
   },
 
-  setOutputType: function(paramType){
-    this.params.outputType = paramType;
-  },
 
   /* necessary because of the design requirement that resultParams be specified
   for async elevation services in order to get Zs (unnecessarily confusing)*/
@@ -174,25 +171,13 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     var pollJob = function() {
       this._service.request('jobs/' + jobId, {}, function polledJob(error, response) {
         if (response.jobStatus === 'esriJobSucceeded') {
-          
           if (!this._done){
             this._done = true;
 
-            if (this.params.outputType === 'MapService'){                        
-              var baseURL = this._service.options.url;
-              var n = baseURL.indexOf('GPServer');
-              this.outputMapService = baseURL.slice(0,n)+'MapServer/'+'jobs/'+jobId;
-
-              this._service.request('jobs/' + jobId, this.resultParams, function processJobResult(error, response) {
-                callback.call(error, response);
-              }, this);
-              
-            }
-            else {
-              this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
+            this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
                 callback.call(context, error, (response && this.processGPOutput(response)), response);
-              }, this);  
-            }
+            }, this);  
+            
           }
           window.clearInterval(counter);
         } else if (response.jobStatus === 'esriJobFailed') {
@@ -210,19 +195,29 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     var processedResponse = {};
     var responseValue;
 
-
     if (this.options.async === false) {
       responseValue = response.results[0].value;
-    } else {
+    } 
+    else if (response.dataType === 'GPRasterDataLayer'){
+      processedResponse.jobId = this._currentJobId;
+      responseValue = 'N/A';
+    }
+    else {
       responseValue = response.value;
       processedResponse.jobId = this._currentJobId;
     }
-
     if (responseValue.features) {
       var featureCollection = L.esri.Util.responseToFeatureCollection(responseValue);
       processedResponse.features = featureCollection.features;
-    } else if (response.results[0].dataType === 'GPDataFile') {
+    } 
+    if (response.dataType === 'GPDataFile') {
       processedResponse.result = response.results[0];
+    } 
+    if (response.dataType === 'GPRasterDataLayer'){
+        var baseURL = this.options.url;
+        var n = baseURL.indexOf('GPServer');
+        var serviceURL = baseURL.slice(0,n)+'MapServer/';
+        processedResponse.outputMapService = serviceURL+'jobs/'+this._currentJobId;
     }
     //do we need to be able to pass back output booleans? strings? numbers?
     return processedResponse;

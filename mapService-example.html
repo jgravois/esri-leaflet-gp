@@ -46,30 +46,24 @@
 
   var gpService = new L.esri.GP.Services.Geoprocessing({
     url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/911CallsHotspot/GPServer/911%20Calls%20Hotspot",
-    useCors:true,
-    async: true,
-    asyncInterval: 5
+    useCors:true
   });
 
   var gpTask = gpService.createTask()
-
   gpTask.setParam("Query", "(Date >= date '1998-01-01 12:00:00' and Date <= date '1998-01-07 12:00:00') AND (Day = 'SUN' OR Day= 'SAT' OR Day = 'FRI' OR Day ='MON' OR Day='TUE' OR Day='WED' OR Day ='THU')");
 
-  gpTask.setOutputType("MapService");
-
-  gpTask.setOutputParam("Hotspot_Raster");
-
+gpTask.setOutputParam('Hotspot_Raster');
 
   map.on('click', function(evt){
     document.getElementById('info-pane').innerHTML = 'working...';
       gpTask.run(getRaster);
   });
 
-  function getRaster(){
-    L.esri.dynamicMapLayer(gpTask.outputMapService,{
-      layers:[1]
-    }).addTo(map);
-  }
+  function getRaster(error, raw, result){
+	  L.esri.dynamicMapLayer(raw.outputMapService, {
+	    opacity: 0.5
+	  }).addTo(map);  
+}
 
 
 
