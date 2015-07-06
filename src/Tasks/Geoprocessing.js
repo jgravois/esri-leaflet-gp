@@ -83,7 +83,6 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     this.params.outputParam = paramName;
   },
 
-
   /* necessary because of the design requirement that resultParams be specified
   for async elevation services in order to get Zs (unnecessarily confusing)*/
   gpAsyncResultParam: function(paramName, paramValue) {
@@ -173,9 +172,8 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
         if (response.jobStatus === 'esriJobSucceeded') {
           if (!this._done){
             this._done = true;
-
             this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
-                callback.call(context, error, (response && this.processGPOutput(response)), response);
+              callback.call(context, error, (response && this.processGPOutput(response)), response);
             }, this);  
             
           }
