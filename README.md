@@ -164,6 +164,12 @@ Method | Returns | Description
 `run(<Function> callback)` | `this` | Calls the corresponding Geoprocessing service, passing the previously supplied input parameters.
 `gpAsyncResultParam(<String> resultParamName, <Object> value)` | `this` | Sets a result parameter for Asynchronous geoprocessing services that require it.
 
+### Events
+
+Event | Data | Description
+--- | --- | ---
+`initialized` | `this` | Fired when a request to retrieve service metadata (to determine things like execution type and operation name) is complete.
+
 #### Result Object
 
 A single result from the geoprocessing service. You should not rely on all these properties being present in every result object.

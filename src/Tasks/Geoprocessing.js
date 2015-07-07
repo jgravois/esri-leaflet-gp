@@ -24,7 +24,6 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
       //the parameters below seem wonky to me, but work for both CORS and JSONP requests
       this._service.metadata(function(error, results) {
         if (!error) {
-          console.log(results);
           if (results.executionType === 'esriExecutionTypeSynchronous') {
             this.options.async = false;
             this.options.path = 'execute';
@@ -174,7 +173,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
             this._done = true;
             this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
               callback.call(context, error, (response && this.processGPOutput(response)), response);
-            }, this);         
+            }, this);
           }
           window.clearInterval(counter);
         } else if (response.jobStatus === 'esriJobFailed') {
@@ -210,7 +209,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 		var serviceURL = baseURL.slice(0,n)+'MapServer/';
 		processedResponse.outputMapService = serviceURL+'jobs/'+this._currentJobId;
 	}
-	
+
 	// if output is GPFeatureRecordSetLayer, convert to GeoJSON
   	if (responseValue.features) {
   		var featureCollection = L.esri.Util.responseToFeatureCollection(responseValue);

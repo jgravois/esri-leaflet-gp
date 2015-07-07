@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased][unreleased]
+## [Unreleased]
 ### Changed
 - Added support for temporary map service output (async services only).
 

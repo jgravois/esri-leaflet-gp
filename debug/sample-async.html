@@ -50,11 +50,16 @@
     url: 'http://logistics.arcgis.com/arcgis/rest/services/World/ServiceAreas/GPServer/GenerateServiceAreas',
     /* insert hardcoded token from:
     https://developers.arcgis.com/en/applications/  */
-    token: 'wozpsq0aX_woWpfzHnxpgkGYjAMKQ_Zo7DVGglXSyHLuSu7n_D14N_ho2wAkqTSRTSUhSvngAdDNrHPm5BUt6DSA7zocPweHtxu18XyEJpfbstyz6t2go_t_Wwc1j0MEty4f8s7P-T8hSHW8t_Q6bw..',
+    token: 'hMDkgqSnDbRjv79TAkqRjaSqmKGx8540HfzSMpkj9bL42peOgkNii8KdCJHw7A3cr3_Acl5dCU9P9jLA4MBKTKxIY04fg5bGwlDfJNgdz8a9Hxz0xQCnM_Mg-xReaxUIypqGB7dQ3__di_7nmIbhvA..',
     asyncInterval: 1
   });
 
   var gpTask = gpService.createTask();
+
+  gpTask.on('initialized', function(evt){
+    console.log(evt);
+  });
+
   gpTask.setParam('break_values', '1 2');
   gpTask.setOutputParam('Service_Areas');
   var driveTimes = new L.FeatureGroup();
