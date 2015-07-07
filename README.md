@@ -192,6 +192,15 @@ Geoprocessing results conform to the following format
   }
 ]
 ```
+#### Accessing Map Service Results
+If your geoprocessing service creates a map service you can access the url of the resulting service using [`raw.outputMapService`].
+```js
+gpTask.run(getMapService);
+
+function getMapService(error, raw, result){
+  L.esri.dynamicMapLayer(raw.outputMapService).addTo(map);  
+}
+```
 
 ## Development Instructions
 

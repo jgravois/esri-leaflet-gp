@@ -174,8 +174,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
             this._done = true;
             this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
               callback.call(context, error, (response && this.processGPOutput(response)), response);
-            }, this);  
-            
+            }, this);         
           }
           window.clearInterval(counter);
         } else if (response.jobStatus === 'esriJobFailed') {
@@ -193,30 +192,36 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     var processedResponse = {};
     var responseValue;
 
-    if (this.options.async === false) {
-      responseValue = response.results[0].value;
-    } 
-    else if (response.dataType === 'GPRasterDataLayer'){
-      processedResponse.jobId = this._currentJobId;
-      responseValue = 'N/A';
-    }
-    else {
-      responseValue = response.value;
-      processedResponse.jobId = this._currentJobId;
-    }
-    if (responseValue.features) {
-      var featureCollection = L.esri.Util.responseToFeatureCollection(responseValue);
-      processedResponse.features = featureCollection.features;
-    } 
-    if (response.dataType === 'GPDataFile') {
-      processedResponse.result = response.results[0];
-    } 
-    if (response.dataType === 'GPRasterDataLayer'){
-        var baseURL = this.options.url;
-        var n = baseURL.indexOf('GPServer');
-        var serviceURL = baseURL.slice(0,n)+'MapServer/';
-        processedResponse.outputMapService = serviceURL+'jobs/'+this._currentJobId;
-    }
+	// grab syncronous results
+	if (this.options.async === false) {
+		responseValue = response.results[0].value;
+	}
+
+	//grab async results slightly differently
+	else {
+		processedResponse.jobId = this._currentJobId;
+	    responseValue = response.value;
+	}
+
+	// if output is a raster layer, we also need to stub out a MapService url using jobid
+	if (this.options.async === true && response.dataType === 'GPRasterDataLayer') {
+		var baseURL = this.options.url;
+		var n = baseURL.indexOf('GPServer');
+		var serviceURL = baseURL.slice(0,n)+'MapServer/';
+		processedResponse.outputMapService = serviceURL+'jobs/'+this._currentJobId;
+	}
+	
+	// if output is GPFeatureRecordSetLayer, convert to GeoJSON
+  	if (responseValue.features) {
+  		var featureCollection = L.esri.Util.responseToFeatureCollection(responseValue);
+  		processedResponse.features = featureCollection.features;
+  	}
+
+	// if the output is a file, pass it along 'as is'
+	if (response.dataType === 'GPDataFile') {
+		processedResponse.outputFile = response.results[0];
+	}
+
     //do we need to be able to pass back output booleans? strings? numbers?
     return processedResponse;
   }
