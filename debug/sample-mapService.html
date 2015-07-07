@@ -19,7 +19,9 @@
 </head>
 <body>
 
-<script src="dist/esri-leaflet-gp-src.js"></script>
+<script src="../src/EsriLeafletGP.js"></script>
+<script src="../src/Services/Geoprocessing.js"></script>
+<script src="../src/Tasks/Geoprocessing.js"></script>
 
 <style>
   #info-pane {
@@ -59,10 +61,10 @@ gpTask.setOutputParam('Hotspot_Raster');
       gpTask.run(getRaster);
   });
 
-  function getRaster(error, raw, result){
-	  L.esri.dynamicMapLayer(raw.outputMapService, {
+  function getRaster(error, processedResponse, rawResponse){
+	  L.esri.dynamicMapLayer(processedResponse.outputMapService, {
 	    opacity: 0.5
-	  }).addTo(map);  
+	  }).addTo(map);
 }
 
 

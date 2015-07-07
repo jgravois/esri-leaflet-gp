@@ -20,8 +20,8 @@ coverage
 # Debugging Files
 debug/*
 !debug/sample.html
-!debug/mapService-example.html
-!debug/async-sample.html
+!debug/sample-mapService.html
+!debug/sample-async.html
 
 # Built Files
 dist/**/*.js

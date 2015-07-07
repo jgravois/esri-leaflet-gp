@@ -170,9 +170,10 @@ A single result from the geoprocessing service. You should not rely on all these
 
 Property | Type | Description
 --- | --- | ---
-`jobId` | [`<String>`] | ID of processed job (only applicable for asynchronous services).
 `features` | [`L.GeoJSON`] | An array of GeoJSON features.
 `result` | `<Object>`| A result object typically containing a link to the url of an output file written to disk on the server.
+`jobId` | [`<String>`] | ID of processed job (only applicable for asynchronous services).
+`outputMapService` | `<String>`| Url of temporary map service created by geoprocessing service, if its been designed to create one.
 
 #### GP Results
 
@@ -181,25 +182,18 @@ Geoprocessing results conform to the following format
 ```json
 [
   {
-    "features": ['L.GeoJSON'],
+    "features": [<L.GeoJSON>],
     "result":{
       "paramName": "Output_File",
       "dataType": "GPDataFile",
       "value": {
         "url": "http://server/arcgis/rest/directories/arcgisoutput/./_ags_856aed6eb_.png"
       }
-    }
+    },
+    "jobId": "j7123be34ccfe45b4b47a51e867e0084b",
+    "mapService": "http://server/arcgis/rest/services/GPServiceName/MapServer/jobs/j7123be34ccfe45b4b47a51e867e0084b/"
   }
 ]
-```
-#### Accessing Map Service Results
-If your geoprocessing service creates a map service you can access the url of the resulting service using [`raw.outputMapService`].
-```js
-gpTask.run(getMapService);
-
-function getMapService(error, raw, result){
-  L.esri.dynamicMapLayer(raw.outputMapService).addTo(map);  
-}
 ```
 
 ## Development Instructions
