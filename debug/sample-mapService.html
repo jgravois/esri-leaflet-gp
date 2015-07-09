@@ -5,12 +5,12 @@
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
-  <script src="node_modules/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+  <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
 
   <!-- Load Esri Leaflet from CDN -->
   <!-- we encourage you to replace 'latest' with a hardcode version number (like '1.0.0-rc.7') in production applications -->
-  <script src="node_modules/esri-leaflet/dist/esri-leaflet.js"></script>
+  <script src="../node_modules/esri-leaflet/dist/esri-leaflet.js"></script>
 
   <style>
     body { margin:0; padding:0; }
@@ -62,7 +62,8 @@ gpTask.setOutputParam('Hotspot_Raster');
   });
 
   function getRaster(error, processedResponse, rawResponse){
-	  L.esri.dynamicMapLayer(processedResponse.outputMapService, {
+	  L.esri.dynamicMapLayer({
+      url: processedResponse.outputMapService,
 	    opacity: 0.5
 	  }).addTo(map);
 }
