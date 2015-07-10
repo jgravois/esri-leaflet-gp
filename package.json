@@ -1,6 +1,6 @@
 {
   "name": "esri-leaflet-gp",
-  "version": "0.0.1-beta.2dev",
+  "version": "1.0.0",
   "main": "EsriLeafletGP.js",
   "description": "A Leaflet plugin that allows users to interact with geoprocessing services.",
   "homepage": "https://github.com/jgravois/esri-leaflet-gp",
@@ -32,12 +32,13 @@
   "contributors": [
     "John Gravois <jgravois@esri.com> (http://johngravois.com)",
     "Nicholas Furness <nfurness@esri.com> (http://nixta.github.io/)",
-    "Patrick Arlt <parlt@esri.com> (http://patrickarlt.com)"
+    "Patrick Arlt <parlt@esri.com> (http://patrickarlt.com)",
+    "Rowan Winsemius"
   ],
   "license": "Apache 2.0",
   "readmeFilename": "README.md",
   "dependencies": {
-    "leaflet": "^0.7.0",
-    "esri-leaflet": "^1.0.0-rc.5"
+    "leaflet": "^0.7.3",
+    "esri-leaflet": "^1.0.0"
   }
 }
