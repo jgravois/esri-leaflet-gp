@@ -38,7 +38,7 @@
   "license": "Apache 2.0",
   "readmeFilename": "README.md",
   "dependencies": {
-    "leaflet": "0.7.3",
+    "leaflet": "^0.7.3",
     "esri-leaflet": "^1.0.0"
   }
 }
