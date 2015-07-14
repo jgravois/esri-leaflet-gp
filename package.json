@@ -1,6 +1,6 @@
 {
   "name": "esri-leaflet-gp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "EsriLeafletGP.js",
   "description": "A Leaflet plugin that allows users to interact with geoprocessing services.",
   "homepage": "https://github.com/jgravois/esri-leaflet-gp",

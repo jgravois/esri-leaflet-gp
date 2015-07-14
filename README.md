@@ -7,7 +7,7 @@ Esri Leaflet GP is an API helper for interacting with geoprocessing services pub
 Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Example
-Note that the latest version of this plugin requires a minimum of esri-leaflet [1.0.0 RC5](https://github.com/Esri/esri-leaflet/releases/tag/v1.0.0-rc.5).
+Note that the latest version of this plugin requires a minimum of esri-leaflet [1.0.0](https://github.com/Esri/esri-leaflet/releases/tag/v1.0.0).
 
 Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation-profile.html) to see it in action.
 
@@ -24,10 +24,10 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
   <!-- Esri Leaflet Core -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri/1.0.0-rc.8/esri-leaflet.js"></script>
+  <script src="http://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet-gp/0.0.1-beta.1/esri-leaflet-gp.js"></script>
+  <script src="http://cdn.jsdelivr.net/leaflet.esri.gp/1.0.0/esri-leaflet-gp.js"></script>
 
 
   <style>
@@ -160,8 +160,8 @@ L.esri.GP.Tasks.Geoprocessing accepts all L.esri.Tasks.Task options.
 Method | Returns | Description
 --- | --- | ---
 `setParam(<String> inputParamName, <String||Boolean||Number||Geometry> value)` | `this` | Sets an input parameter.  L.LatLng, L.Marker, L.LatLngBounds, and L.GeoJSON (both Features and Geometries) will be converted to [GeoServices](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Geometry_objects/02r3000000n1000000/) JSON automatically.
-`setOutputParam(<String> outputParamName)` | `this` | Only applicable for asynchronous services.  Nofifies the plugin of the parameter name so that it knows where to retrieve output.
-`run(<Function> callback)` | `this` | Calls the corresponding Geoprocessing service, passing the previously supplied input parameters.
+`setOutputParam(<String> outputParamName)` | `this` | Only applicable for asynchronous services.  Nofifies the plugin of the parameter name to retrieve output for.
+`run(<Function> callback)` | `this` | Calls the corresponding Geoprocessing service, passing the previously supplied input parameters.  For synchronous services, **all** result parameters are parsed and returned.
 `gpAsyncResultParam(<String> resultParamName, <Object> value)` | `this` | Sets a result parameter for Asynchronous geoprocessing services that require it.
 
 ### Events
@@ -188,11 +188,10 @@ Geoprocessing results conform to the following format
 ```json
 [
   {
-    "features": [<L.GeoJSON>],
-    "result":{
-      "paramName": "Output_File",
-      "dataType": "GPDataFile",
-      "value": {
+    "outputGPFeatureRecordSetLayerParamName": [<L.GeoJSON>],
+    "outputGPStringParamName": ["string"],
+    "outputGPBooleanParamName": [Boolean],
+    "outputGPFileParamName": {
         "url": "http://server/arcgis/rest/directories/arcgisoutput/./_ags_856aed6eb_.png"
       }
     },
