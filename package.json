@@ -8,6 +8,10 @@
     "type": "git",
     "url": "git@github.com:jgravois/esri-leaflet-gp.git"
   },
+  "scripts": {
+    "prepublish": "grunt prepublish",
+    "test": "grunt test"
+  },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-concat": "^0.3.0",
