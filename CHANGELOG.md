@@ -3,7 +3,7 @@
 ## [1.0.1]
 
 ### Changed
-- refactored result parsing logic to return **all** output results in callback instead of just the first.
+- refactored result parsing logic to return **all** output results in callback for synchronous services instead of just the first.
 - moved CDN to [jsdelivr](http://www.jsdelivr.com/#!leaflet.esri.gp)
 
 ## [1.0.0]
