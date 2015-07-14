@@ -171,8 +171,10 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
         if (response.jobStatus === 'esriJobSucceeded') {
           if (!this._done){
             this._done = true;
+            // to do:
+            // refactor to make an array of async requests for output
             this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult(error, response) {
-              callback.call(context, error, (response && this.processGPOutput(response)), response);
+              callback.call(context, error, (response && this.processAsyncOutput(response)), response);
             }, this);
           }
           window.clearInterval(counter);
@@ -191,37 +193,60 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     var processedResponse = {};
     var responseValue;
 
-	// grab syncronous results
-	if (this.options.async === false) {
-		responseValue = response.results[0].value;
-	}
-
-	//grab async results slightly differently
-	else {
-		processedResponse.jobId = this._currentJobId;
-	    responseValue = response.value;
-	}
-
-	// if output is a raster layer, we also need to stub out a MapService url using jobid
-	if (this.options.async === true && response.dataType === 'GPRasterDataLayer') {
-		var baseURL = this.options.url;
-		var n = baseURL.indexOf('GPServer');
-		var serviceURL = baseURL.slice(0,n)+'MapServer/';
-		processedResponse.outputMapService = serviceURL+'jobs/'+this._currentJobId;
-	}
-
-	// if output is GPFeatureRecordSetLayer, convert to GeoJSON
-  	if (responseValue.features) {
-  		var featureCollection = L.esri.Util.responseToFeatureCollection(responseValue);
-  		processedResponse.features = featureCollection.features;
+  	// grab syncronous results
+  	if (this.options.async === false) {
+  	  // loop through results and pass back, parsing esri json
+      for (i=0;i<response.results.length;i++){
+        processedResponse[response.results[i].paramName];
+        if (response.results[i].dataType === 'GPFeatureRecordSetLayer') {
+          var featureCollection = L.esri.Util.responseToFeatureCollection(response.results[i].value);
+          processedResponse[response.results[i].paramName] = featureCollection;
+        }
+        else {
+          processedResponse[response.results[i].paramName] = response.results[i].value;
+        }
+      }
   	}
 
-	// if the output is a file, pass it along 'as is'
-	if (response.dataType === 'GPDataFile') {
-		processedResponse.outputFile = response.results[0];
-	}
+  	//grab async results slightly differently
+  	else {
+  		processedResponse.jobId = this._currentJobId;
+  	  responseValue = response.value;
+  	}
 
-    //do we need to be able to pass back output booleans? strings? numbers?
+  	// if output is a raster layer, we also need to stub out a MapService url using jobid
+  	if (this.options.async === true && response.dataType === 'GPRasterDataLayer') {
+  		var baseURL = this.options.url;
+  		var n = baseURL.indexOf('GPServer');
+  		var serviceURL = baseURL.slice(0,n)+'MapServer/';
+  		processedResponse.outputMapService = serviceURL+'jobs/'+this._currentJobId;
+  	}
+
+    return processedResponse;
+  },
+
+  processAsyncOutput(response) {
+    var processedResponse = {};
+    processedResponse.jobId = this._currentJobId;
+
+    // if output is a raster layer, we also need to stub out a MapService url using jobid
+    if (this.options.async === true && response.dataType === 'GPRasterDataLayer') {
+      var baseURL = this.options.url;
+      var n = baseURL.indexOf('GPServer');
+      var serviceURL = baseURL.slice(0,n)+'MapServer/';
+      processedResponse.outputMapService = serviceURL+'jobs/'+this._currentJobId;
+    }
+
+    // if output is GPFeatureRecordSetLayer, convert to GeoJSON
+    if (response.dataType === 'GPFeatureRecordSetLayer' ) {
+      var featureCollection = L.esri.Util.responseToFeatureCollection(response.value);
+      processedResponse[response.paramName] = featureCollection;
+    }
+
+    else {
+      processedResponse[response.paramName] = response.value;
+    }
+
     return processedResponse;
   }
 

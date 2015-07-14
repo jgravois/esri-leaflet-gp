@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1]
+
+### Changed
+- refactored result parsing logic to return **all** output results in callback instead of just the first.
+- moved CDN to [jsdelivr](http://www.jsdelivr.com/#!leaflet.esri.gp)
+
 ## [1.0.0]
 
 This is expected to be the last (and only) stable release of Esri Leaflet GP compatible with Leaflet 0.7.3. All future 1.0.X releases will be compatible with Leaflet 0.7.3 and contain only bug fixes. New features will only be added in Esri Leaflet GP 2.0.0 (which will require Leaflet 1.0.0).
