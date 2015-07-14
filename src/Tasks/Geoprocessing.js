@@ -196,8 +196,10 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
   	// grab syncronous results
   	if (this.options.async === false) {
   	  // loop through results and pass back, parsing esri json
-      for (i=0;i<response.results.length;i++){
+      for (var i=0;i<response.results.length;i++){
+        /* jshint ignore:start */
         processedResponse[response.results[i].paramName];
+        /* jshint ignore:end */
         if (response.results[i].dataType === 'GPFeatureRecordSetLayer') {
           var featureCollection = L.esri.Util.responseToFeatureCollection(response.results[i].value);
           processedResponse[response.results[i].paramName] = featureCollection;
@@ -225,7 +227,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
     return processedResponse;
   },
 
-  processAsyncOutput(response) {
+  processAsyncOutput: function(response) {
     var processedResponse = {};
     processedResponse.jobId = this._currentJobId;
 

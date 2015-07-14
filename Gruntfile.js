@@ -119,15 +119,13 @@ module.exports = function(grunt) {
         src: [ 'dist/**/*.js','dist/**/*.map' ]
       }
     }
-
   });
-
-
 
   grunt.registerTask('default', ['build']);
   grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
   grunt.registerTask('test', ['jshint', 'karma:run']);
   grunt.registerTask('release', ['releaseable']);
+  grunt.registerTask('prepublish', ['concat', 'uglify']);
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
