@@ -14,9 +14,9 @@
   <script src="//leaflet.github.io/Leaflet.draw/leaflet.draw.js"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet/1.0.0-rc.6/esri-leaflet.js"></script>
+  <script src="//cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
 
-  <script src="//cdn-geoweb.s3.amazonaws.com/esri-leaflet-gp/0.0.1-alpha.3/esri-leaflet-gp.js"></script>
+  <script src="//cdn.jsdelivr.net/leaflet.esri.gp/1.0.2/esri-leaflet-gp.js"></script>
 
   <style>
     body {
@@ -94,7 +94,8 @@
   //haven't figured out why 'error' isn't retrieved in first position
   function addGPResultToMap(error, result, raw) {
     document.getElementById('info-pane').innerHTML = 'click on markers to see elevations';
-    coords = result.features[0].geometry.coordinates;
+    // dig into output parameters by name
+    coords = result.OutputProfile.features[0].geometry.coordinates;
     for (var i = 0; i < coords.length; i++) {
       var resLatLng = L.latLng(coords[i][1], coords[i][0]);
       var myMarker = L.marker(resLatLng).addTo(map);

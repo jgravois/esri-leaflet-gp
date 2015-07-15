@@ -27,7 +27,7 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <script src="http://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri.gp/1.0.0/esri-leaflet-gp.js"></script>
+  <script src="http://cdn.jsdelivr.net/leaflet.esri.gp/1.0.2/esri-leaflet-gp.js"></script>
 
 
   <style>
@@ -84,7 +84,7 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   });
 
   function driveTimeCallback(error, response, raw){
-    driveTimes.addLayer(L.geoJson(response));
+    driveTimes.addLayer(L.geoJson(response.Output_Drive_Time_Polygons));
   }
 
 </script>
@@ -172,12 +172,12 @@ Event | Data | Description
 
 #### Result Object
 
+The response from synchronous services will be a JSON object composed of name value pairs of output parameter names and their associated values.  GPFeatureRecordSet layer output will converted to GeoJSON.
+
 A single result from the geoprocessing service. You should not rely on all these properties being present in every result object.
 
 Property | Type | Description
 --- | --- | ---
-`features` | [`L.GeoJSON`] | An array of GeoJSON features.
-`result` | `<Object>`| A result object typically containing a link to the url of an output file written to disk on the server.
 `jobId` | [`<String>`] | ID of processed job (only applicable for asynchronous services).
 `outputMapService` | `<String>`| Url of temporary map service created by geoprocessing service, if its been designed to create one.
 
