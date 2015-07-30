@@ -3,9 +3,9 @@ to do:
 setParam([])
 */
 import L from 'leaflet';
-import { Task, Util } from 'esri-leaflet';
+import { Task as BaseTask, Util } from 'esri-leaflet';
 
-export var TaskGP = Task.extend({
+export var Task = BaseTask.extend({
 
   includes: L.Mixin.Events,
 
@@ -15,7 +15,7 @@ export var TaskGP = Task.extend({
 
   initialize: function(options) {
     //don't replace parent initialize
-    Task.prototype.initialize.call(this, options);
+    BaseTask.prototype.initialize.call(this, options);
 
     //if path isn't supplied in options, try and determine if its sync or async to set automatically
     if (!this.options.path) {
@@ -121,7 +121,7 @@ export var TaskGP = Task.extend({
     if ( geometry instanceof L.GeoJSON ) {
       //reassign geometry to the GeoJSON value  (we are assuming that only one feature is present)
       geometry = geometry.getLayers()[0].feature.geometry;
-      processedInput.features.push({'geometry': L.esri.Util.geojsonToArcGIS(geometry)});
+      processedInput.features.push({'geometry': Util.geojsonToArcGIS(geometry)});
       processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
     }
 
@@ -138,8 +138,8 @@ export var TaskGP = Task.extend({
 
     // confirm that our GeoJSON is a point, line or polygon
     if ( geometry.type === 'Point' ||  geometry.type === 'LineString' || geometry.type === 'Polygon') {
-      processedInput.features.push({'geometry': L.esri.Util.geojsonToArcGIS(geometry)});
-      processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
+      processedInput.features.push({'geometry': Util.geojsonToArcGIS(geometry)});
+      processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
     }
 
     else {
@@ -256,8 +256,8 @@ export var TaskGP = Task.extend({
 
 });
 
-export function taskGP (options) {
-  return new TaskGP(options);
+export function task (options) {
+  return new Task(options);
 }
 
-export default taskGP;
+export default task;

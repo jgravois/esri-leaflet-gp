@@ -1,19 +1,21 @@
-import { Service } from 'esri-leaflet';
-import { TaskGP } from '../Tasks/Geoprocessing';
+import { Service as BaseService } from 'esri-leaflet';
+import { Task } from '../Tasks/Geoprocessing';
 
-export var ServiceGP = Service.extend({
+// var BaseService = Service;
+
+export var Service = BaseService.extend({
   options: {
     asyncInterval: 1
   },
 
   createTask: function(){
-    return new TaskGP(this, this.options);
+    return new Task(this, this.options);
   }
 
 });
 
-export function serviceGP (options) {
-  return new ServiceGP(options);
+export function service (options) {
+  return new Service(options);
 }
 
-export default serviceGP;
+export default service;

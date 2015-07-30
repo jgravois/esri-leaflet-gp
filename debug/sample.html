@@ -4,16 +4,11 @@
   <title>drivetimes</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-  <!-- Load Leaflet -->
+  <!-- Load Leaflet from CDN-->
   <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
-  <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
-
-  <!-- Load Esri Leaflet -->
-  <script src="../node_modules/esri-leaflet/dist/esri-leaflet-src.js"></script>
-
-  <script src="../src/EsriLeafletGP.js"></script>
-  <script src="../src/Services/Geoprocessing.js"></script>
-  <script src="../src/Tasks/Geoprocessing.js"></script>
+  <script src="../node_modules/leaflet/dist/leaflet.js"></script>
+  <script src="../node_modules/esri-leaflet/dist/esri-leaflet.js"></script>
+  <script src="../dist/esri-leaflet-gp.js"></script>
 
   <style>
     body {margin:0;padding:0;}
@@ -28,7 +23,7 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      z-index: 10;
+      z-index: 1000;
       padding: 1em;
       background: white;
     }
@@ -46,7 +41,7 @@
   var map = L.map('map').setView([42.36, -71.06], 13);
   L.esri.basemapLayer('Gray').addTo(map);
 
-  var gpService = new L.esri.GP.Services.Geoprocessing({
+  var gpService = L.esri.GP.service({
     url: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
     useCors:false
   });

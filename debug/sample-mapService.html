@@ -6,11 +6,9 @@
 
   <!-- Load Leaflet from CDN-->
   <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
-  <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
-
-  <!-- Load Esri Leaflet from CDN -->
-  <!-- we encourage you to replace 'latest' with a hardcode version number (like '1.0.0-rc.7') in production applications -->
+  <script src="../node_modules/leaflet/dist/leaflet.js"></script>
   <script src="../node_modules/esri-leaflet/dist/esri-leaflet.js"></script>
+  <script src="../dist/esri-leaflet-gp.js"></script>
 
   <style>
     body { margin:0; padding:0; }
@@ -19,16 +17,12 @@
 </head>
 <body>
 
-<script src="../src/EsriLeafletGP.js"></script>
-<script src="../src/Services/Geoprocessing.js"></script>
-<script src="../src/Tasks/Geoprocessing.js"></script>
-
 <style>
   #info-pane {
     position: absolute;
     top: 10px;
     right: 10px;
-    z-index: 10;
+    z-index: 1000;
     padding: 1em;
     background: white;
   }
@@ -46,7 +40,7 @@
 
   L.esri.basemapLayer('Gray').addTo(map);
 
-  var gpService = new L.esri.GP.Services.Geoprocessing({
+  var gpService = L.esri.GP.service({
     url: "http://sampleserver6.arcgisonline.com/arcgis/rest/services/911CallsHotspot/GPServer/911%20Calls%20Hotspot",
     useCors:true
   });
@@ -67,10 +61,6 @@ gpTask.setOutputParam('Hotspot_Raster');
 	    opacity: 0.5
 	  }).addTo(map);
 }
-
-
-
-
 </script>
 
 </body>
