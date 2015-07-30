@@ -1,13 +1,19 @@
-EsriLeafletGP.Services.Geoprocessing = Esri.Services.Service.extend({
+import { Service } from 'esri-leaflet';
+import { TaskGP } from '../Tasks/Geoprocessing';
+
+export var ServiceGP = Service.extend({
   options: {
     asyncInterval: 1
   },
 
   createTask: function(){
-    return new EsriLeafletGP.Tasks.Geoprocessing(this, this.options);
+    return new TaskGP(this, this.options);
   }
+
 });
 
-EsriLeafletGP.Services.geoprocessing = function(options) {
-  return new EsriLeafletGP.Services.Geoprocessing(options);
-};
+export function serviceGP (options) {
+  return new ServiceGP(options);
+}
+
+export default serviceGP;

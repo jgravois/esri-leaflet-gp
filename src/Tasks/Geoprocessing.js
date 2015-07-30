@@ -2,8 +2,10 @@
 to do:
 setParam([])
 */
+import L from 'leaflet';
+import { Task, Util } from 'esri-leaflet';
 
-EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
+export var TaskGP = Task.extend({
 
   includes: L.Mixin.Events,
 
@@ -13,7 +15,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
   initialize: function(options) {
     //don't replace parent initialize
-    L.esri.Tasks.Task.prototype.initialize.call(this, options);
+    Task.prototype.initialize.call(this, options);
 
     //if path isn't supplied in options, try and determine if its sync or async to set automatically
     if (!this.options.path) {
@@ -201,7 +203,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
         processedResponse[response.results[i].paramName];
         /* jshint ignore:end */
         if (response.results[i].dataType === 'GPFeatureRecordSetLayer') {
-          var featureCollection = L.esri.Util.responseToFeatureCollection(response.results[i].value);
+          var featureCollection = Util.responseToFeatureCollection(response.results[i].value);
           processedResponse[response.results[i].paramName] = featureCollection;
         }
         else {
@@ -241,7 +243,7 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
     // if output is GPFeatureRecordSetLayer, convert to GeoJSON
     if (response.dataType === 'GPFeatureRecordSetLayer' ) {
-      var featureCollection = L.esri.Util.responseToFeatureCollection(response.value);
+      var featureCollection = Util.responseToFeatureCollection(response.value);
       processedResponse[response.paramName] = featureCollection;
     }
 
@@ -254,6 +256,8 @@ EsriLeafletGP.Tasks.Geoprocessing = Esri.Tasks.Task.extend({
 
 });
 
-EsriLeafletGP.Tasks.geoprocessing = function(params) {
-  return new EsriLeafletGP.Tasks.Geoprocessing(params);
-};
+export function taskGP (options) {
+  return new TaskGP(options);
+}
+
+export default taskGP;
