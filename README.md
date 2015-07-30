@@ -27,7 +27,7 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.5/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.1/esri-leaflet-gp.js"></script>
+  <script src="http://cdn.jsdelivr.net/leaflet.esri.gp/2.0.0-beta.1/esri-leaflet-gp.js"></script>
 
 
   <style>
