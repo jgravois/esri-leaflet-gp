@@ -4,12 +4,12 @@ Esri Leaflet GP is an API helper for interacting with geoprocessing services pub
 
 **Currently Esri Leaflet GP is in development and should be thought of as a beta or preview**
 
-Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
+Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when necessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Example
 Note that the latest version of this plugin requires a minimum of esri-leaflet [2.0.0-beta.4](https://github.com/Esri/esri-leaflet/releases/tag/v2.0.0-beta.4).
 
-Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation-profile.html) to see it in action.
+Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation.html) to see it in action.
 
 ```html
 <!DOCTYPE html>

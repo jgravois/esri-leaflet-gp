@@ -1,0 +1,118 @@
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>Esri Leaflet Quickstart</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load D3 from CDN-->
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.js"></script>
+
+  <!-- Load Esri Leaflet from CDN -->
+  <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.5/esri-leaflet.js"></script>
+
+  <!-- Load Esri Leaflet GP from CDN -->
+  <script src="./dist/esri-leaflet-gp.js"></script>
+
+  <script src="./support/Leaflet.Elevation-0.0.2.src.js"></script>
+  <link rel="stylesheet" href="./support/Leaflet.Elevation-0.0.2.css">
+
+  <style>
+    body {margin:0;padding:0;}
+    #map {position: absolute;top:0;bottom:0;right:0;left:0;}
+    .lime-theme .leaflet-control.elevation .background {
+      background: transparent;
+    }
+    .elevation {
+      box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+      border-radius: 4px;
+      background: white;
+      padding: 1em;
+    }
+    #info-pane {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 150px;
+      z-index: 1000;
+      padding: 1em;
+      background: white;
+    }
+    .leaflet-bar a {
+      color: blue;
+      display: inline;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+  <label>sketch a line to display elevation data.<br><br>information about the associated geoprocessing service can be found <a href="https://developers.arcgis.com/rest/elevation/api-reference/profile.htm">here.</a></label>
+</div>
+
+<script>
+  var map = L.map('map', {
+    zoomControl: false
+  }).setView([38.9074, -119.9908], 13);
+
+  // Disable drag and zoom handlers.
+  map.dragging.disable();
+  map.touchZoom.disable();
+  map.doubleClickZoom.disable();
+  map.scrollWheelZoom.disable();
+
+  // Disable tap handler, if present.
+  if (map.tap) {
+    map.tap.disable()
+  };
+
+  L.esri.basemapLayer('Topographic').addTo(map);
+
+  var active = false;
+  var polyline;
+
+  var profileService = L.esri.GP.service({
+    url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile"
+  });
+
+  map.on('click', function (e) {
+    if (active) {
+      // are active build line and query
+      active = false;
+      var profile = profileService.createTask();
+
+      profile.setParam("DEMResolution", "FINEST");
+      profile.setParam("ProfileIdField", "OID");
+      profile.setParam("MaximumSampleDistance", 50000);
+      profile.setParam("returnZ", true);
+      profile.setParam("InputLineFeatures", polyline.toGeoJSON());
+
+      profile.run(function(error, result, response){
+        var geojson = result.OutputProfile.features;
+        var el = L.control.elevation().addTo(map)
+
+        L.geoJson(geojson,{
+          onEachFeature: el.addData.bind(el)
+        }).addTo(map);
+      });
+    } else {
+      // in active create new polyline
+      active = true;
+      polyline = L.polyline([]).addTo(map);
+    }
+  });
+
+  map.on('mousemove', function(e){
+    if(!active) {
+      return false;
+    }
+    polyline.addLatLng(e.latlng);
+  });
+</script>
+
+</body>
+</html>

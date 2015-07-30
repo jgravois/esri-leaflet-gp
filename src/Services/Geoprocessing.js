@@ -1,8 +1,6 @@
 import { Service as BaseService } from 'esri-leaflet';
 import { Task } from '../Tasks/Geoprocessing';
 
-// var BaseService = Service;
-
 export var Service = BaseService.extend({
   options: {
     asyncInterval: 1
