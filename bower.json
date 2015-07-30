@@ -1,0 +1,12 @@
+{
+  "name": "esri-leaflet-gp",
+  "version": "v2.0.0-beta.1",
+  "main": "dist/esri-leaflet-gp.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "spec",
+    "debug"
+  ]
+}

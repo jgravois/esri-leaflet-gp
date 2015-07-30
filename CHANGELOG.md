@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.0.0-beta.1]
+
+### Breaking
+* Requires the 2.0.0-beta.4 release of Esri Leaflet.
+* Requires the 1.0.0-beta.1 release of Leaflet.
+* Namespaces have changed all exports now sit directly under the `L.esri.GP` namespace. This mean that things like `L.esri.GP.Services.Geoprocessing` can now be accessed like `L.esri.GP.Service`.
+
+### Added
+
+* Better build/test/release automation.
+* Support for JSPM in package.json. Now you can `import gpTask from 'esri-leaflet-gp/src/Tasks/Geoprocessing';` for more compact builds but, be aware of [caveats](http://blog.izs.me/post/44149270867/why-no-directories-lib-in-node-the-less-snarky)
+* Support for browserify in the package.json. Now you can `var gpTask = require('esri-leaflet-gp/src/Tasks/Geoprocessing');` for more compact builds, but be aware of [caveats](http://blog.izs.me/post/44149270867/why-no-directories-lib-in-node-the-less-snarky)
+
+
 ## [1.0.2]
 
 ### Changed

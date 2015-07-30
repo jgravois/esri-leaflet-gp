@@ -1,4 +1,4 @@
-describe('L.esri.GP.Tasks.Geoprocessing', function () {
+describe('L.esri.GP', function () {
   function createMap(){
     // create container
     var container = document.createElement('div');
@@ -130,7 +130,7 @@ describe('L.esri.GP.Tasks.Geoprocessing', function () {
 
   beforeEach(function(){
     server = sinon.fakeServer.create();
-    service = new L.esri.GP.Services.Geoprocessing({url: gpServiceUrl});
+    service = new L.esri.GP.Service({url: gpServiceUrl});
 
   });
 
@@ -156,42 +156,42 @@ describe('L.esri.GP.Tasks.Geoprocessing', function () {
   });
 
   it("should make appropriate requests when a custom path is supplied", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should pass along individual primitive parameters in requests", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should parse GeoJSON inputs and pass them as GeoServices JSON", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should do the same with markers", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("and bounds", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should parse GP service feature collection responses and present them as GeoJSON", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should parse GP service responses and present file download urls", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should make appropriate requests when a custom path is supplied", function () {
-    var gpTask = L.esri.GP.Tasks.Geoprocessing();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 

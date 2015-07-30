@@ -4,12 +4,12 @@ Esri Leaflet GP is an API helper for interacting with geoprocessing services pub
 
 **Currently Esri Leaflet GP is in development and should be thought of as a beta or preview**
 
-Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when neccessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
+Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when necessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Example
-Note that the latest version of this plugin requires a minimum of esri-leaflet [1.0.0](https://github.com/Esri/esri-leaflet/releases/tag/v1.0.0).
+Note that the latest version of this plugin requires a minimum of esri-leaflet [2.0.0-beta.4](https://github.com/Esri/esri-leaflet/releases/tag/v2.0.0-beta.4).
 
-Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation-profile.html) to see it in action.
+Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation.html) to see it in action.
 
 ```html
 <!DOCTYPE html>
@@ -20,14 +20,14 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.js"></script>
 
   <!-- Esri Leaflet Core -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
+  <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.5/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri.gp/1.0.2/esri-leaflet-gp.js"></script>
+  <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.1/esri-leaflet-gp.js"></script>
 
 
   <style>
@@ -66,15 +66,15 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
 
   L.esri.basemapLayer('NationalGeographic').addTo(map);
 
-  var gpService = new L.esri.GP.Services.Geoprocessing({
+  var gpService = L.esri.GP.service({
     url: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
     useCors:false
   });
   var gpTask = gpService.createTask();
 
-  gpTask.setParam("Drive_Times", "5 10");
+  gpTask.setParam("Drive_Times", "1 2");
 
-  var driveTimes = new L.FeatureGroup();
+  var driveTimes = L.featureGroup();
   map.addLayer(driveTimes);
 
   map.on('click', function(evt){
@@ -92,15 +92,15 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
 </body>
 </html>
 ```
-## L.esri.GP.Services.Geoprocessing
+## L.esri.GP.Service
 
 ### Constructor
 
-**Extends** [`L.esri.Services.Service`](http://esri.github.io/esri-leaflet/api-reference/tasks/task.html)
+**Extends** [`L.esri.Service`](http://esri.github.io/esri-leaflet/api-reference/services/service.html)
 
 Constructor | Options | Description
 --- | --- | ---
-`new L.esri.GP.Services.Geoprocessing(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Service.
+`L.esri.GP.service(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Service.
 
 ### Options
 
@@ -118,7 +118,7 @@ If you are working with an asynchronous service or one with a custom operation n
 The 'initialized' event is intended to help with this.
 
 ```
-var myService = new L.esri.GP.Services.Geoprocessing({
+var myService = L.esri.GP.service({
     url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationAsync/GPServer/Profile"
   });
 var myTask = myService.createTask();
@@ -132,28 +132,28 @@ myTask.on('initialized', function(){
 
 ```
 
-L.esri.GP.Services.Geoprocessing also accepts all L.esri.Services.Service options.
+L.esri.GP.Service also accepts all L.esri.Service options.
 
 ### Methods
 
 Method | Returns | Description
 --- | --- | ---
-`createTask()` | `L.esri.GP.Tasks.Geoprocessing` | Returns a Geoprocessing task.
+`createTask()` | `L.esri.GP.Task` | Returns a Geoprocessing task.
 
 
-## L.esri.GP.Tasks.Geoprocessing
+## L.esri.GP.Task
 
 ### Constructor
 
-**Extends** [`L.esri.Tasks.Task`](http://esri.github.io/esri-leaflet/api-reference/tasks/task.html)
+**Extends** [`L.esri.Task`](http://esri.github.io/esri-leaflet/api-reference/tasks/task.html)
 
 Constructor | Options | Description
 --- | --- | ---
-`GeoprocessingService.createTask()`<br>`L.esri.Tasks.Tasks(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Task.
+`GeoprocessingService.createTask()`<br>`L.esri.Task(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Task.
 
 ### Options
 
-L.esri.GP.Tasks.Geoprocessing accepts all L.esri.Tasks.Task options.
+L.esri.GP.Task accepts all L.esri.Task options.
 
 ### Methods
 
