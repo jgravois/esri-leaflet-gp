@@ -141,7 +141,7 @@ Method | Returns | Description
 `createTask()` | `L.esri.GP.Task` | Returns a Geoprocessing task.
 
 
-## L.esri.GP.TaskGP
+## L.esri.GP.Task
 
 ### Constructor
 

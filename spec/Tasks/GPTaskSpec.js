@@ -156,42 +156,42 @@ describe('L.esri.GP', function () {
   });
 
   it("should make appropriate requests when a custom path is supplied", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should pass along individual primitive parameters in requests", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should parse GeoJSON inputs and pass them as GeoServices JSON", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should do the same with markers", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("and bounds", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should parse GP service feature collection responses and present them as GeoJSON", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should parse GP service responses and present file download urls", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 
   it("should make appropriate requests when a custom path is supplied", function () {
-    var gpTask = L.esri.GP.task();
+    var gpTask = service.createTask();
     expect(1).to.be.eq(1);
   });
 

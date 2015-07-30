@@ -6,7 +6,7 @@ export var Service = BaseService.extend({
     asyncInterval: 1
   },
 
-  createTask: function(){
+  createTask: function () {
     return new Task(this, this.options);
   }
 
