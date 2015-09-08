@@ -62,5 +62,4 @@ This is expected to be the last (and only) stable release of Esri Leaflet GP com
 [1.0.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/jgravois/esri-leaflet-gp/compare/v0.0.1-beta.1...v1.0.0
 [Beta 1]: https://github.com/jgravois/esri-leaflet-gp/compare/v0.0.1-alpha.3...v0.0.1-beta.1
-[Alpha 3]https://github.com/jgravois/esri-leaflet-gp/compare/v0.0.1-alpha.3...v0.0.1-alpha.2
-[Alpha 2]
+[Alpha 3]: https://github.com/jgravois/esri-leaflet-gp/compare/v0.0.1-alpha.3...v0.0.1-alpha.2
