@@ -47,7 +47,7 @@ This is expected to be the last (and only) stable release of Esri Leaflet GP com
 ### Changed
 - in addition to L.GeoJSON geometries, L.LatLng, L.LatLngBounds, and L.Marker are now considered valid GP inputs
 
-## [Alpha 2]
+## Alpha 2
 
 ### Breaking Changes
 - reorganized logic of GP to inherit from services (to introduce better support for secure resources)
@@ -56,3 +56,11 @@ This is expected to be the last (and only) stable release of Esri Leaflet GP com
 - added ability to set custom paths (which will allow for use with Network Analyst services and SOEs)
 - refactored code to follow pattern established by [esri-leaflet-geocoder](https://github.com/Esri/esri-leaflet-geocoder)
 - introduced ability to check properties of GP services that don't support CORS
+
+[2.0.0-beta.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.2...v2.0.0-beta.1
+[1.0.2]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/jgravois/esri-leaflet-gp/compare/v0.0.1-beta.1...v1.0.0
+[Beta 1]: https://github.com/jgravois/esri-leaflet-gp/compare/v0.0.1-alpha.3...v0.0.1-beta.1
+[Alpha 3]https://github.com/jgravois/esri-leaflet-gp/compare/v0.0.1-alpha.3...v0.0.1-alpha.2
+[Alpha 2]
