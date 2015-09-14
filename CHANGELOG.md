@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.0]
+
+### Changed
+
+* moving out of beta and into full-blown SemVer.
+
 ## [2.0.0-beta.1]
 
 ### Breaking
@@ -57,6 +63,7 @@ This is expected to be the last (and only) stable release of Esri Leaflet GP com
 - refactored code to follow pattern established by [esri-leaflet-geocoder](https://github.com/Esri/esri-leaflet-geocoder)
 - introduced ability to check properties of GP services that don't support CORS
 
+[2.0.0]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.0-beta.1...v2.0.0
 [2.0.0-beta.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.2...v2.0.0-beta.1
 [1.0.2]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.0...v1.0.1
