@@ -8,14 +8,14 @@
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.css" />
-  <script src="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.5/esri-leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js"></script>
 
   <!-- Load Esri Leaflet GP from CDN -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri.gp/2.0.0-beta.1/esri-leaflet-gp.js"></script>
+  <script src="https://cdn.jsdelivr.net/leaflet.esri.gp/2.0.0/esri-leaflet-gp.js"></script>
 
   <script src="./support/Leaflet.Elevation-0.0.2.src.js"></script>
   <link rel="stylesheet" href="./support/Leaflet.Elevation-0.0.2.css">
@@ -23,15 +23,18 @@
   <style>
     body {margin:0;padding:0;}
     #map {position: absolute;top:0;bottom:0;right:0;left:0;}
+
     .lime-theme .leaflet-control.elevation .background {
       background: transparent;
     }
+
     .elevation {
       box-shadow: 0 1px 5px rgba(0,0,0,0.65);
       border-radius: 4px;
       background: white;
       padding: 1em;
     }
+
     #info-pane {
       position: absolute;
       top: 10px;
@@ -41,8 +44,13 @@
       padding: 1em;
       background: white;
     }
+
     .leaflet-bar a {
-      color: blue;
+      background-color: #f4f4f4;
+      display: inline;
+    }
+
+    .leaflet-bar a:hover {
       display: inline;
     }
   </style>
