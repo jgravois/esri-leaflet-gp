@@ -2,8 +2,6 @@
 
 Esri Leaflet GP is an API helper for interacting with geoprocessing services published with ArcGIS Server and the analysis services hosted in ArcGIS Online.
 
-**Currently Esri Leaflet GP is in development and should be thought of as a beta or preview**
-
 Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when necessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
 
 ## Example
@@ -20,14 +18,14 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.css" />
-  <script src="http://cdn.leafletjs.com/leaflet-1.0.0-b1/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js"></script>
 
-  <!-- Esri Leaflet Core -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.5/esri-leaflet.js"></script>
+  <!-- Load Esri Leaflet from CDN -->
+  <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="http://cdn.jsdelivr.net/leaflet.esri.gp/2.0.0-beta.1/esri-leaflet-gp.js"></script>
+  <script src="https://cdn.jsdelivr.net/leaflet.esri.gp/2.0.0/esri-leaflet-gp.js"></script>
 
 
   <style>
@@ -92,122 +90,18 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
 </body>
 </html>
 ```
-## L.esri.GP.Service
+## API Reference
 
-### Constructor
-
-**Extends** [`L.esri.Service`](http://esri.github.io/esri-leaflet/api-reference/services/service.html)
-
-Constructor | Options | Description
---- | --- | ---
-`L.esri.GP.service(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Service.
-
-### Options
-
-Option | Type | Default | Description
---- | --- | --- | ---
-`url` | `String` | `` | The URL of the geoprocessing service you'd like to leverage.
-`path` | `String` | `execute` | (Optional) The class is able to sniff out execute/submitJob operations from typical [Geoprocessing](http://server.arcgis.com/en/server/latest/publish-services/windows/a-quick-tour-of-authoring-geoprocessing-services.htm) services, but setting 'path' can be helpful for [SOEs](http://resources.arcgis.com/en/help/main/10.2/index.html#//0154000004s5000000) and Network Analyst Services with custom operation names.
-`async` | `Boolean` | `false` | (Optional) Set 'async' to indicate whether a GP service with a custom operation name is synchronous or asynchronous.
-`asyncInterval` | `Integer` | `1` | (Optional) How often the application should check on jobs in progress.
-
-Note: By default, the plugin assumes services are synchronous and that 'execute' is the appropriate path.
-
-If you are working with an asynchronous service or one with a custom operation name and don't supply this information in the constructor, you'll have to leave enough time to make a roundtrip to the server and gather the information before calling GP.Tasks.Geoprocessing.run().
-
-The 'initialized' event is intended to help with this.
-
-```
-var myService = L.esri.GP.service({
-    url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationAsync/GPServer/Profile"
-  });
-var myTask = myService.createTask();
-
-myTask.on('initialized', function(){
-  myTask.setParam("inputFeature", polyline.toGeoJSON());
-  myTask.run(function(error, geojson, response){
-    ...
-  });
-})
-
-```
-
-L.esri.GP.Service also accepts all L.esri.Service options.
-
-### Methods
-
-Method | Returns | Description
---- | --- | ---
-`createTask()` | `L.esri.GP.Task` | Returns a Geoprocessing task.
-
-
-## L.esri.GP.Task
-
-### Constructor
-
-**Extends** [`L.esri.Task`](http://esri.github.io/esri-leaflet/api-reference/tasks/task.html)
-
-Constructor | Options | Description
---- | --- | ---
-`GeoprocessingService.createTask()`<br>`L.esri.Task(options)` | [`<GeoprocessingOptions>`](#options) | Creates a new Geoprocessing Task.
-
-### Options
-
-L.esri.GP.Task accepts all L.esri.Task options.
-
-### Methods
-
-Method | Returns | Description
---- | --- | ---
-`setParam(<String> inputParamName, <String||Boolean||Number||Geometry> value)` | `this` | Sets an input parameter.  L.LatLng, L.Marker, L.LatLngBounds, and L.GeoJSON (both Features and Geometries) will be converted to [GeoServices](http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Geometry_objects/02r3000000n1000000/) JSON automatically.
-`setOutputParam(<String> outputParamName)` | `this` | Only applicable for asynchronous services.  Nofifies the plugin of the parameter name to retrieve output for.
-`run(<Function> callback)` | `this` | Calls the corresponding Geoprocessing service, passing the previously supplied input parameters.  For synchronous services, **all** result parameters are parsed and returned.
-`gpAsyncResultParam(<String> resultParamName, <Object> value)` | `this` | Sets a result parameter for Asynchronous geoprocessing services that require it.
-
-### Events
-
-Event | Data | Description
---- | --- | ---
-`initialized` | `this` | Fired when a request to retrieve service metadata (to determine things like execution type and operation name) is complete.
-
-#### Result Object
-
-The response from synchronous services will be a JSON object composed of name value pairs of output parameter names and their associated values.  GPFeatureRecordSet layer output will converted to GeoJSON.
-
-A single result from the geoprocessing service. You should not rely on all these properties being present in every result object.
-
-Property | Type | Description
---- | --- | ---
-`jobId` | [`<String>`] | ID of processed job (only applicable for asynchronous services).
-`outputMapService` | `<String>`| Url of temporary map service created by geoprocessing service, if its been designed to create one.
-
-#### GP Results
-
-Geoprocessing results conform to the following format
-
-```json
-[
-  {
-    "outputGPFeatureRecordSetLayerParamName": [<L.GeoJSON>],
-    "outputGPStringParamName": ["string"],
-    "outputGPBooleanParamName": [Boolean],
-    "outputGPFileParamName": {
-        "url": "http://server/arcgis/rest/directories/arcgisoutput/./_ags_856aed6eb_.png"
-      }
-    },
-    "jobId": "j7123be34ccfe45b4b47a51e867e0084b",
-    "mapService": "http://server/arcgis/rest/services/GPServiceName/MapServer/jobs/j7123be34ccfe45b4b47a51e867e0084b/"
-  }
-]
-```
+### [`L.esri.GP.Service`](http://esri.github.io/esri-leaflet/api-reference/services/gp-service.html)
+### [`L.esri.GP.Task`](http://esri.github.io/esri-leaflet/api-reference/tasks/gp-task.html)
 
 ## Development Instructions
 
 1. [Fork and clone Esri Leaflet GP](https://help.github.com/articles/fork-a-repo)
-2. `cd` into the `esri-leaflet-gp` folder
-5. Install the dependencies with `npm install`
-5. The 'elevation-profile.html' example should 'just work'
-6. Make your changes and create a [pull request](https://help.github.com/articles/creating-a-pull-request)
+2. `cd` into the `esri-leaflet-gp` folder and install the dependencies with `npm install`
+3. Run `npm start` from the command line. This will compile minified source in a brand new `dist` directory, launch a tiny webserver and begin watching the raw source for changes.
+4. The example at `debug/sample.html` *should* 'just work'
+5. Make your changes and create a [pull request](https://help.github.com/articles/creating-a-pull-request)
 
 ## Dependencies
 
@@ -233,12 +127,12 @@ Esri welcomes contributions from anyone and everyone. Please see our [guidelines
 Signup for an [ArcGIS for Developers account](https://developers.arcgis.com/en/plans) or purchase an [ArcGIS Online Organizational Subscription](http://www.arcgis.com/features/plans/pricing.html).
 
 1. Once you have an account you are good to go. Thats it!
-2. If you use this library in a revenue generating application or for goverment use you must upgrade to a paid account. You are not allowed to generate revenue while on a free plan.
+2. If you use this library in a revenue generating application or for government use you must upgrade to a paid account. You are not allowed to generate revenue while on a free plan.
 
 This information is from the [ArcGIS for Developers Terms of Use FAQ](https://developers.arcgis.com/en/terms/faq/)
 
 ## Licensing
-Copyright 2015 Esri
+Copyright 2016 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

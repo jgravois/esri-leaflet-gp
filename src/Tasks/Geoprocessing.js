@@ -187,7 +187,6 @@ export var Task = BaseTask.extend({
     }.bind(this);
 
     var counter = window.setInterval(pollJob, this._service.options.asyncInterval * 1000);
-
   },
 
   processGPOutput: function (response) {
