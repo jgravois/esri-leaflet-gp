@@ -18,15 +18,14 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.css" />
-  <script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.0-rc.3"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js"></script>
+  <script src="https://unpkg.com/esri-leaflet@2.0.3"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="https://cdn.jsdelivr.net/leaflet.esri.gp/2.0.0/esri-leaflet-gp.js"></script>
-
+  <script src="https://unpkg.com/esri-leaflet-gp@2.0.1"></script>
 
   <style>
     body {
@@ -120,7 +119,7 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 
 ## Contributing
 
-Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
+Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/Esri/esri-leaflet/blob/master/CONTRIBUTING.md).
 
 ## Terms and Conditions
 

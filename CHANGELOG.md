@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased][unreleased]
+
+## [2.0.1]
+
+### Fixed
+
+* add `package.json` browser bundle pointing at built library.
+
+### Changed
+
+* Build system refactored to use latest Rollup and Rollup plugins.
+* Reworked bundling directives for various modules systems to resolve and simplify various issues
+  * WebPack users no longer have to use the Babel loader.
+  * Babelify with Babel 6 now works
+
 ## [2.0.0]
 
 ### Changed
@@ -63,6 +78,8 @@ This is expected to be the last (and only) stable release of Esri Leaflet GP com
 - refactored code to follow pattern established by [esri-leaflet-geocoder](https://github.com/Esri/esri-leaflet-geocoder)
 - introduced ability to check properties of GP services that don't support CORS
 
+[unreleased]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.0-beta.1...v2.0.0
 [2.0.0-beta.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.2...v2.0.0-beta.1
 [1.0.2]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.1...v1.0.2
