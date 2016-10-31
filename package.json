@@ -14,7 +14,7 @@
     "Rowan Winsemius"
   ],
   "dependencies": {
-    "leaflet": "^1.0.0-rc.3",
+    "leaflet": "^1.0.0",
     "esri-leaflet": "^2.0.0"
   },
   "devDependencies": {

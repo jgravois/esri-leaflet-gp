@@ -1,13 +1,15 @@
 # Esri Leaflet GP
 
-Esri Leaflet GP is an API helper for interacting with geoprocessing services published with ArcGIS Server and the analysis services hosted in ArcGIS Online.
+> an Esri Leaflet plugin for interacting with geoprocessing services published with ArcGIS Server and the analysis services hosted in ArcGIS Online.
 
-Esri Leaflet GP relies on the minimal Esri Leaflet Core which handles abstraction for requests and authentication when necessary. You can find out more about the Esri Leaflet Core on the [Esri Leaflet downloads page](http://esri.github.com/esri-leaflet/downloads).
+Esri Leaflet GP relies on the minimal [Esri Leaflet](https://github.com/Esri/esri-leaflet) Core which handles abstraction for requests and authentication when necessary.
 
-## Example
+## Demos
 Note that the latest version of this plugin requires a minimum of esri-leaflet [2.0.0-beta.4](https://github.com/Esri/esri-leaflet/releases/tag/v2.0.0-beta.4).
 
 Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation.html) to see it in action.
+
+## Example
 
 ```html
 <!DOCTYPE html>
@@ -18,11 +20,11 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.0.0-rc.3"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.1"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://unpkg.com/esri-leaflet@2.0.3"></script>
+  <script src="https://unpkg.com/esri-leaflet@2.0.4"></script>
 
   <!-- Esri Leaflet GP -->
   <script src="https://unpkg.com/esri-leaflet-gp@2.0.1"></script>
@@ -64,7 +66,7 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   L.esri.basemapLayer('NationalGeographic').addTo(map);
 
   var gpService = L.esri.GP.service({
-    url: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
+    url: "https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
     useCors:false
   });
   var gpTask = gpService.createTask();

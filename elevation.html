@@ -8,11 +8,11 @@
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.0.0-rc.3"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.1"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://unpkg.com/esri-leaflet@2.0.3"></script>
+  <script src="https://unpkg.com/esri-leaflet@2.0.4"></script>
 
   <!-- Esri Leaflet GP -->
   <script src="https://unpkg.com/esri-leaflet-gp@2.0.1"></script>
@@ -84,7 +84,7 @@
   var polyline;
 
   var profileService = L.esri.GP.service({
-    url: "http://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile"
+    url: "https://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile"
   });
 
   map.on('click', function (e) {
