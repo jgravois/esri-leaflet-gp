@@ -8,6 +8,8 @@ import { Task as BaseTask, Util } from 'esri-leaflet';
 
 export var Task = BaseTask.extend({
 
+  includes: L.Evented.prototype,
+
   // setters: {}, we don't use these because we don't know the ParamName OR value of custom GP services
   params: {},
   resultParams: {},

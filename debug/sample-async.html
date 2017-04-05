@@ -43,18 +43,11 @@
   L.esri.basemapLayer('Gray').addTo(map);
 
   var gpService = L.esri.GP.service({
-    url: 'http://logistics.arcgis.com/arcgis/rest/services/World/ServiceAreas/GPServer/GenerateServiceAreas',
-    /* insert hardcoded token from:
-    https://developers.arcgis.com/en/applications/  */
-    token: 'z5_MwM6afXQRJOdkbYEmaWzN1lM3-JS-StKWD71S5K28A1PUp8Q58Rn4qUiKyrLFpzUTeFOC5F61QbHkEGoIpNFdl3SnXPU9mJrWRFShqQRbIX8FslTcphluowUKjn2DiOfVTIpiRRP_aUibMgqZHA..',
-    asyncInterval: 1
+    url: 'http://utility.arcgis.com/usrsvcs/appservices/ZSSLB8sUOalOH2wb/rest/services/World/ServiceAreas/GPServer/GenerateServiceAreas',
+    asyncInterval: 2
   });
 
   var gpTask = gpService.createTask();
-
-  gpTask.on('initialized', function(evt){
-    // console.log(evt);
-  });
 
   gpTask.setParam('break_values', '1 2');
   gpTask.setOutputParam('Service_Areas');

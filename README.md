@@ -5,7 +5,7 @@
 Esri Leaflet GP relies on the minimal [Esri Leaflet](https://github.com/Esri/esri-leaflet) Core which handles abstraction for requests and authentication when necessary.
 
 ## Demos
-Note that the latest version of this plugin requires a minimum of esri-leaflet [2.0.0-beta.4](https://github.com/Esri/esri-leaflet/releases/tag/v2.0.0-beta.4).
+Note that the latest version of this plugin requires a minimum of esri-leaflet [2.0.0](https://github.com/Esri/esri-leaflet/releases/tag/v2.0.0).
 
 Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation.html) to see it in action.
 
@@ -20,11 +20,11 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.0.1"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.3"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://unpkg.com/esri-leaflet@2.0.4"></script>
+  <script src="https://unpkg.com/esri-leaflet@2.0.8"></script>
 
   <!-- Esri Leaflet GP -->
   <script src="https://unpkg.com/esri-leaflet-gp@2.0.1"></script>

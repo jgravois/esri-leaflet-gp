@@ -47,10 +47,10 @@
     useCors:false
   });
 
+  var driveTimes = new L.FeatureGroup();
+
   var gpTask = gpService.createTask();
   gpTask.setParam("Drive_Times", "1 2");
-
-  var driveTimes = new L.FeatureGroup();
   map.addLayer(driveTimes);
 
   map.on('click', function(evt){
