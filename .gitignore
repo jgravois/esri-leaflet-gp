@@ -22,6 +22,7 @@ debug/*
 !debug/sample.html
 !debug/sample-mapService.html
 !debug/sample-async.html
+!debug/closest-facility.html
 
 # Built Files
 dist/**/*.js

@@ -1,0 +1,86 @@
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>drivetimes</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+
+  <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
+  <script src="../node_modules/esri-leaflet/dist/esri-leaflet-debug.js"></script>
+  <script src="../dist/esri-leaflet-gp-debug.js"></script>
+
+  <style>
+    body {margin:0;padding:0;}
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+    #info-pane {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      padding: 1em;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+  <label>
+  click on the map to route to the closest hospital
+  </label>
+</div>
+
+<script>
+  var map = L.map('map').setView([33.780021258266224, -118.18885803222658], 12);
+    L.esri.basemapLayer('Topographic').addTo(map);
+
+    var hospitalLayer = L.featureGroup();
+    var routesLayer = L.featureGroup();
+    // layers to organize graphics
+    map.addLayer(hospitalLayer);
+    map.addLayer(routesLayer);
+
+    var closestFacilityService = L.esri.GP.service({
+        url: "http://utility.arcgis.com/usrsvcs/appservices/uLllFwUwZbj9awbO/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World",
+        path: 'solveClosestFacility'
+    });
+    var closestFacilityTask = closestFacilityService.createTask();
+
+    // make sure the route solver understands that we'll be driving an ambulance
+    closestFacilityTask.setParam("restrictionAttributeNames", "Driving an Emergency Vehicle");
+    closestFacilityTask.setParam("returnCFRoutes", true);
+
+    // query LA open data for nearby hospitals
+    L.esri.query({
+      url: "http://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/LMS_Data_Public/MapServer/81"
+    })
+      .within(map.getBounds())
+      .run(function (err, response, raw) {
+
+        // draw the hospitals on the map
+        hospitalLayer.addLayer(L.geoJSON(response));
+
+        // supply the hospitals as an input parameter to the service
+        closestFacilityTask.setParam("facilities", response);
+    });
+
+    // when a click is registered, find the closest hospital
+    map.on("click", function (evt) {
+        routesLayer.clearLayers();
+        closestFacilityTask.setParam("incidents", evt.latlng);
+        closestFacilityTask.run(function (err, res, raw) {
+            routesLayer.addLayer(L.geoJSON(res.routes.features[0]));
+        })
+    });
+</script>
+
+</body>
+</html>

@@ -8,8 +8,6 @@ import { Task as BaseTask, Util } from 'esri-leaflet';
 
 export var Task = BaseTask.extend({
 
-  includes: L.Mixin.Events,
-
   // setters: {}, we don't use these because we don't know the ParamName OR value of custom GP services
   params: {},
   resultParams: {},
@@ -137,6 +135,13 @@ export var Task = BaseTask.extend({
     if (geometry.type === 'Point' || geometry.type === 'LineString' || geometry.type === 'Polygon') {
       processedInput.features.push({'geometry': Util.geojsonToArcGIS(geometry)});
       processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
+    }
+
+    else if (geometry.type === "FeatureCollection") {
+      processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.features[0].type);
+      for (var i = 0; i < geometry.features.length; i++) {
+        processedInput.features.push({'geometry': Util.geojsonToArcGIS(geometry.features[i].geometry)});
+      }
     } else {
       if (console && console.warn) {
         console.warn('invalid geometry passed as GP input. Should be an L.LatLng, L.LatLngBounds, L.Marker or GeoJSON Point Line or Polygon object');
@@ -159,7 +164,11 @@ export var Task = BaseTask.extend({
       /* eslint-enable */
     } else {
       return this._service.request(this.options.path, this.params, function (error, response) {
-        callback.call(context, error, (response && this.processGPOutput(response)), response);
+        if (response.results) {
+          callback.call(context, error, (response && this.processGPOutput(response)), response);
+        } else if (response.routes) {
+          callback.call(context, error, (response && this.processNetworkAnalystOutput(response)), response);
+        }
       }, this);
     }
   },
@@ -192,18 +201,19 @@ export var Task = BaseTask.extend({
   processGPOutput: function (response) {
     var processedResponse = {};
 
+    var results = response.results;
     // grab syncronous results
     if (this.options.async === false) {
       // loop through results and pass back, parsing esri json
-      for (var i = 0; i < response.results.length; i++) {
+      for (var i = 0; i < results.length; i++) {
         /* jshint ignore:start */
-        processedResponse[response.results[i].paramName];
+        processedResponse[results[i].paramName];
         /* jshint ignore:end */
-        if (response.results[i].dataType === 'GPFeatureRecordSetLayer') {
-          var featureCollection = Util.responseToFeatureCollection(response.results[i].value);
-          processedResponse[response.results[i].paramName] = featureCollection;
+        if (results[i].dataType === 'GPFeatureRecordSetLayer') {
+          var featureCollection = Util.responseToFeatureCollection(results[i].value);
+          processedResponse[results[i].paramName] = featureCollection;
         } else {
-          processedResponse[response.results[i].paramName] = response.results[i].value;
+          processedResponse[results[i].paramName] = results[i].value;
         }
       }
     } else { // grab async results slightly differently
@@ -217,6 +227,17 @@ export var Task = BaseTask.extend({
       var n = baseURL.indexOf('GPServer');
       var serviceURL = baseURL.slice(0, n) + 'MapServer/';
       processedResponse.outputMapService = serviceURL + 'jobs/' + this._currentJobId;
+    }
+
+    return processedResponse;
+  },
+
+  processNetworkAnalystOutput: function (response) {
+    var processedResponse = {};
+
+    if (response.routes.features.length > 0) {
+        var featureCollection = Util.responseToFeatureCollection(response.routes);
+        processedResponse.routes = featureCollection;
     }
 
     return processedResponse;
