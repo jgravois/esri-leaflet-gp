@@ -1,0 +1,112 @@
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>Closest Facility</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+
+  <script src="../node_modules/leaflet/dist/leaflet-src.js"></script>
+  <script src="../node_modules/esri-leaflet/dist/esri-leaflet-debug.js"></script>
+  <script src="../dist/esri-leaflet-gp-debug.js"></script>
+
+  <script src="https://unpkg.com/leaflet-shape-markers@1.0.6"></script>
+
+  <style>
+    body {margin:0;padding:0;}
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+    #info-pane {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      padding: 1em;
+      background: white;
+      max-width: 240px;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+  <label>
+  click on the map to determine the best route to the nearest hospital.
+  </label>
+</div>
+
+<script>
+    let map = L.map('map').setView([33.780021258266224, -118.18885803222658], 12);
+    L.esri.basemapLayer('Topographic').addTo(map);
+
+    // layers to organize graphics
+    let routesLayer = L.featureGroup();
+    let ambulanceLayer = L.featureGroup();
+
+    map.addLayer(routesLayer);
+    map.addLayer(ambulanceLayer);
+
+    let ambulanceIcon = L.icon({
+      iconUrl: 'https://cdn4.iconfinder.com/data/icons/SIGMA/medical/png/256/ambulance.png',
+      iconSize: [40, 40],
+      iconAnchor: [20, 20]
+    });
+
+    // use a service proxy to authenticate automagically
+    // https://developers.arcgis.com/authentication/working-with-proxies/
+    let closestFacilityService = L.esri.GP.service({
+        url: "http://utility.arcgis.com/usrsvcs/appservices/uLllFwUwZbj9awbO/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World",
+        path: 'solveClosestFacility'
+    });
+    let closestFacilityTask = closestFacilityService.createTask();
+
+    // tell the solver we'll be driving an ambulance
+    closestFacilityTask.setParam("restrictionAttributeNames", "Driving an Emergency Vehicle");
+    closestFacilityTask.setParam("returnCFRoutes", true);
+
+    // fetch nearby hospitals from LA open data
+    L.esri.query({
+      url: "http://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/LMS_Data_Public/MapServer/81"
+    })
+      .within(map.getBounds())
+      .run(function (err, response, raw) {
+        // draw the hospitals on the map
+        map.addLayer(L.geoJSON(response, {
+          pointToLayer: function (geoJsonPoint, latlng) {
+            return L.shapeMarkers.crossMarker(latlng, 25, { color: 'red', weight: 5 })
+          }
+        }));
+        // supply the same hospitals as an input parameter to the closest facility service
+        closestFacilityTask.setParam("facilities", response);
+    });
+
+    // when someone clicks on the map, find the route to the nearest hospital
+    map.on("click", function (evt) {
+        // clear any existing
+        routesLayer.clearLayers();
+        ambulanceLayer.clearLayers();
+
+        // add an ambulance icon to the map
+        ambulanceLayer.addLayer(L.marker(evt.latlng, {
+          icon: ambulanceIcon
+        }));
+
+        // supply the location of the map click as a service parameter
+        closestFacilityTask.setParam("incidents", evt.latlng);
+
+        // and call the solver
+        closestFacilityTask.run(function (err, res, raw) {
+            // draw the GeoJSON feature that was returned
+            routesLayer.addLayer(L.geoJSON(res.routes.features[0]));
+        })
+    });
+</script>
+
+</body>
+</html>
