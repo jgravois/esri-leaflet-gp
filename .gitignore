@@ -23,6 +23,7 @@ debug/*
 !debug/sample-mapService.html
 !debug/sample-async.html
 !debug/closest-facility.html
+!debug/histogram.html
 
 # Built Files
 dist/
