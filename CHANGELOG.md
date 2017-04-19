@@ -2,6 +2,23 @@
 
 ## [Unreleased][unreleased]
 
+## [2.0.2]
+
+### Added
+
+* plugin now supports making GP requests to Image Servers that return histograms
+* plugin now supports Network Analyst style GP requests that return routes
+* parsed input parameters are now limited to a raw geometry (as opposed to an array of features) when `geometryType` was set previously
+
+### Fixed
+
+* more server errors are now passed back to the developer
+* `GPLinearUnit` input parameters can now be passed as JSON object literals
+
+### Changed
+
+* some previously undocumented public methods have been made private
+
 ## [2.0.1]
 
 ### Fixed
@@ -78,7 +95,8 @@ This is expected to be the last (and only) stable release of Esri Leaflet GP com
 - refactored code to follow pattern established by [esri-leaflet-geocoder](https://github.com/Esri/esri-leaflet-geocoder)
 - introduced ability to check properties of GP services that don't support CORS
 
-[unreleased]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.1...HEAD
+[unreleased]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.0-beta.1...v2.0.0
 [2.0.0-beta.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v1.0.2...v2.0.0-beta.1

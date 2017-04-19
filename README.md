@@ -27,7 +27,7 @@ Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leafle
   <script src="https://unpkg.com/esri-leaflet@2.0.8"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="https://unpkg.com/esri-leaflet-gp@2.0.1"></script>
+  <script src="https://unpkg.com/esri-leaflet-gp@2.0.2"></script>
 
   <style>
     body {
@@ -133,7 +133,7 @@ Signup for an [ArcGIS for Developers account](https://developers.arcgis.com/en/p
 This information is from the [ArcGIS for Developers Terms of Use FAQ](https://developers.arcgis.com/en/terms/faq/)
 
 ## Licensing
-Copyright 2016 Esri
+Copyright 2017 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
