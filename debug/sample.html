@@ -52,7 +52,7 @@
   var gpTask = gpService.createTask();
   gpTask.setParam("Drive_Times", "1 2");
 
-  gpTask.setParam("linearUnitParam", { "distance": 3, "units": "esriMiles" })
+  // gpTask.setParam("linearUnitParam", { "distance": 3, "units": "esriMiles" })
   map.addLayer(driveTimes);
 
   map.on('click', function(evt){

@@ -61,7 +61,7 @@ export var Task = BaseTask.extend({
     } else if (typeof paramValue !== 'object') { // strings, numbers
       this.params[paramName] = paramValue;
       return;
-    } else if (typeof paramValue == 'object' && paramValue.units) {
+    } else if (typeof paramValue === 'object' && paramValue.units) {
       // pass through GPLinearUnit params unmolested
       this.params[paramName] = paramValue;
       return;
@@ -75,12 +75,12 @@ export var Task = BaseTask.extend({
           'features': []
         };
 
-        if ( paramValue.type === 'FeatureCollection') {
+        if (paramValue.type === 'FeatureCollection') {
           for (var i = 0; i < paramValue.features.length; i++) {
             esriFeatures.features.push({'geometry': Util.geojsonToArcGIS(paramValue.features[i].geometry)});
           }
         } else {
-          esriFeatures.features.push({"geometry": this._setGeometry(paramValue)});
+          esriFeatures.features.push({'geometry': this._setGeometry(paramValue)});
         }
 
         this.params[paramName] = esriFeatures;
@@ -124,7 +124,6 @@ export var Task = BaseTask.extend({
       geometry = geometry.getLayers()[0].feature.geometry;
       // processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
       return Util.geojsonToArcGIS(geometry);
-
     }
 
     // Handle L.Polyline and L.Polygon
@@ -142,28 +141,19 @@ export var Task = BaseTask.extend({
     if (geometry.type === 'Point' || geometry.type === 'LineString' || geometry.type === 'Polygon') {
       return Util.geojsonToArcGIS(geometry);
       // processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
-    }
-
-    else if (geometry.type === "FeatureCollection") {
-      processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.features[0].type);
-      for (var i = 0; i < geometry.features.length; i++) {
-        processedInput.features.push({'geometry': Util.geojsonToArcGIS(geometry.features[i].geometry)});
-      }
     } else {
-      if (console && console.warn) {
-        console.warn('invalid geometry passed as GP input. Should be an L.LatLng, L.LatLngBounds, L.Marker or GeoJSON Point Line or Polygon object');
-      }
+      Util.warn('invalid geometry passed as GP input. Should be an L.LatLng, L.LatLngBounds, L.Marker or GeoJSON Point Line or Polygon object');
     }
   },
 
   _setGeometryType: function (geometry) {
     if (geometry instanceof L.LatLngBounds) {
-      return "esriGeometryEnvelope";
+      return 'esriGeometryEnvelope';
     }
 
     // convert L.Marker > L.LatLng
     if (geometry.getLatLng || geometry instanceof L.LatLng) {
-      return "esriGeometryPoint";
+      return 'esriGeometryPoint';
     }
 
     // handle L.GeoJSON, pull out the first geometry
@@ -186,13 +176,10 @@ export var Task = BaseTask.extend({
     // confirm that our GeoJSON is a point, line or polygon
     if (geometry.type === 'Point' || geometry.type === 'LineString' || geometry.type === 'Polygon') {
       return Util.geojsonTypeToArcGIS(geometry.type);
-    }
-
-    else if (geometry.type === "FeatureCollection") {
+    } else if (geometry.type === 'FeatureCollection') {
       return Util.geojsonTypeToArcGIS(geometry.features[0].type);
-
     } else {
-      return null
+      return null;
     }
   },
 
@@ -213,7 +200,7 @@ export var Task = BaseTask.extend({
             callback.call(context, error, (response && this._processGPOutput(response)), response);
           } else if (response.histograms) {
             callback.call(context, error, response, response);
-          }else if (response.routes) {
+          } else if (response.routes) {
             callback.call(context, error, (response && this._processNetworkAnalystOutput(response)), response);
           }
         } else {
@@ -286,8 +273,8 @@ export var Task = BaseTask.extend({
     var processedResponse = {};
 
     if (response.routes.features.length > 0) {
-        var featureCollection = Util.responseToFeatureCollection(response.routes);
-        processedResponse.routes = featureCollection;
+      var featureCollection = Util.responseToFeatureCollection(response.routes);
+      processedResponse.routes = featureCollection;
     }
 
     return processedResponse;
