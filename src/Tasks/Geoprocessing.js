@@ -61,44 +61,48 @@ export var Task = BaseTask.extend({
     } else if (typeof paramValue !== 'object') { // strings, numbers
       this.params[paramName] = paramValue;
       return;
+    } else if (typeof paramValue == 'object' && paramValue.units) {
+      // pass through GPLinearUnit params unmolested
+      this.params[paramName] = paramValue;
+      return;
     } else {
       // otherwise assume its latlng, marker, bounds or geojson
-      this._setGeometry(paramName, paramValue);
+      if (paramName === 'geometry') {
+        this.params[paramName] = this._setGeometry(paramValue);
+      } else { // package up an array of esri features if the parameter name is anything other than geometry
+        var esriFeatures = {
+          'geometryType': this._setGeometryType(paramValue),
+          'features': []
+        };
+
+        if ( paramValue.type === 'FeatureCollection') {
+          for (var i = 0; i < paramValue.features.length; i++) {
+            esriFeatures.features.push({'geometry': Util.geojsonToArcGIS(paramValue.features[i].geometry)});
+          }
+        } else {
+          esriFeatures.features.push({"geometry": this._setGeometry(paramValue)});
+        }
+
+        this.params[paramName] = esriFeatures;
+      }
     }
   },
-
-  // not sure how best to handle passing more than one parameter at once
-  // setParams: function(inputArray) {
-  //   if (L.Util.isArray(inputArray)) {
-  //     for (var i = 0; i < inputArray.length; i++) {
-  //       this.setParam(inputArray[i]);
-  //     }
-  //   }
-  // },
 
   // give developer opportunity to point out where the output is going to be available
   setOutputParam: function (paramName) {
     this.params.outputParam = paramName;
   },
 
-  /* necessary because of the design requirement that resultParams be specified
-  for async elevation services in order to get Zs (unnecessarily confusing)*/
+  /* async elevation services need resultParams in order to return Zs (unnecessarily confusing)*/
   gpAsyncResultParam: function (paramName, paramValue) {
     this.resultParams[paramName] = paramValue;
   },
 
   // we currently expect a single geometry or feature (ported from: Tasks.Query._setGeometry)
-  _setGeometry: function (paramName, geometry) {
-    var processedInput = {
-      'geometryType': '',
-      'features': []
-    };
-
+  _setGeometry: function (geometry) {
     // convert bounds to extent and finish
     if (geometry instanceof L.LatLngBounds) {
-      // set geometry + type
-      processedInput.features.push({'geometry': L.esri.Util.boundsToExtent(geometry)});
-      processedInput.geometryType = L.esri.Util.geojsonTypeToArcGIS(geometry.type);
+      return L.esri.Util.boundsToExtent(geometry);
     }
 
     // convert L.Marker > L.LatLng
@@ -116,10 +120,11 @@ export var Task = BaseTask.extend({
 
     // handle L.GeoJSON, pull out the first geometry
     if (geometry instanceof L.GeoJSON) {
-      // reassign geometry to the GeoJSON value  (we are assuming that only one feature is present)
+      // reassign geometry to the GeoJSON value  (we assume one feature is present)
       geometry = geometry.getLayers()[0].feature.geometry;
-      processedInput.features.push({'geometry': Util.geojsonToArcGIS(geometry)});
-      processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
+      // processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
+      return Util.geojsonToArcGIS(geometry);
+
     }
 
     // Handle L.Polyline and L.Polygon
@@ -135,8 +140,8 @@ export var Task = BaseTask.extend({
 
     // confirm that our GeoJSON is a point, line or polygon
     if (geometry.type === 'Point' || geometry.type === 'LineString' || geometry.type === 'Polygon') {
-      processedInput.features.push({'geometry': Util.geojsonToArcGIS(geometry)});
-      processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
+      return Util.geojsonToArcGIS(geometry);
+      // processedInput.geometryType = Util.geojsonTypeToArcGIS(geometry.type);
     }
 
     else if (geometry.type === "FeatureCollection") {
@@ -149,9 +154,46 @@ export var Task = BaseTask.extend({
         console.warn('invalid geometry passed as GP input. Should be an L.LatLng, L.LatLngBounds, L.Marker or GeoJSON Point Line or Polygon object');
       }
     }
+  },
 
-    this.params[paramName] = processedInput;
-    return;
+  _setGeometryType: function (geometry) {
+    if (geometry instanceof L.LatLngBounds) {
+      return "esriGeometryEnvelope";
+    }
+
+    // convert L.Marker > L.LatLng
+    if (geometry.getLatLng || geometry instanceof L.LatLng) {
+      return "esriGeometryPoint";
+    }
+
+    // handle L.GeoJSON, pull out the first geometry
+    if (geometry instanceof L.GeoJSON) {
+      geometry = geometry.getLayers()[0].feature.geometry;
+      return Util.geojsonTypeToArcGIS(geometry.type);
+    }
+
+    // Handle L.Polyline and L.Polygon
+    if (geometry.toGeoJSON) {
+      geometry = geometry.toGeoJSON();
+    }
+
+    // handle GeoJSON feature by pulling out the geometry
+    if (geometry.type === 'Feature') {
+      // get the geometry of the geojson feature
+      geometry = geometry.geometry;
+    }
+
+    // confirm that our GeoJSON is a point, line or polygon
+    if (geometry.type === 'Point' || geometry.type === 'LineString' || geometry.type === 'Polygon') {
+      return Util.geojsonTypeToArcGIS(geometry.type);
+    }
+
+    else if (geometry.type === "FeatureCollection") {
+      return Util.geojsonTypeToArcGIS(geometry.features[0].type);
+
+    } else {
+      return null
+    }
   },
 
   run: function (callback, context) {
@@ -166,10 +208,16 @@ export var Task = BaseTask.extend({
       /* eslint-enable */
     } else {
       return this._service.request(this.options.path, this.params, function (error, response) {
-        if (response.results) {
-          callback.call(context, error, (response && this.processGPOutput(response)), response);
-        } else if (response.routes) {
-          callback.call(context, error, (response && this.processNetworkAnalystOutput(response)), response);
+        if (!error) {
+          if (response.results) {
+            callback.call(context, error, (response && this._processGPOutput(response)), response);
+          } else if (response.histograms) {
+            callback.call(context, error, response, response);
+          }else if (response.routes) {
+            callback.call(context, error, (response && this._processNetworkAnalystOutput(response)), response);
+          }
+        } else {
+          callback.call(context, error, null, null);
         }
       }, this);
     }
@@ -185,7 +233,7 @@ export var Task = BaseTask.extend({
             // to do:
             // refactor to make an array of async requests for output
             this._service.request('jobs/' + jobId + '/results/' + this.params.outputParam, this.resultParams, function processJobResult (error, response) {
-              callback.call(context, error, (response && this.processAsyncOutput(response)), response);
+              callback.call(context, error, (response && this._processAsyncOutput(response)), response);
             }, this);
           }
           window.clearInterval(counter);
@@ -200,7 +248,7 @@ export var Task = BaseTask.extend({
     var counter = window.setInterval(pollJob, this._service.options.asyncInterval * 1000);
   },
 
-  processGPOutput: function (response) {
+  _processGPOutput: function (response) {
     var processedResponse = {};
 
     var results = response.results;
@@ -234,7 +282,7 @@ export var Task = BaseTask.extend({
     return processedResponse;
   },
 
-  processNetworkAnalystOutput: function (response) {
+  _processNetworkAnalystOutput: function (response) {
     var processedResponse = {};
 
     if (response.routes.features.length > 0) {
@@ -245,7 +293,7 @@ export var Task = BaseTask.extend({
     return processedResponse;
   },
 
-  processAsyncOutput: function (response) {
+  _processAsyncOutput: function (response) {
     var processedResponse = {};
     processedResponse.jobId = this._currentJobId;
 

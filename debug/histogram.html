@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta charset=utf-8 />
-  <title>drivetimes</title>
+  <title>histograms</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
@@ -34,7 +34,7 @@
 <div id="map"></div>
 <div id="info-pane" class="leaflet-bar">
   <label>
-  click on the map to calculate 1 and 2 minute drivetimes
+  lets fetch a histogram.
   </label>
 </div>
 
@@ -43,29 +43,22 @@
   L.esri.basemapLayer('Gray').addTo(map);
 
   var gpService = L.esri.GP.service({
-    url: "http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons",
-    useCors:false
+    url: "https://landsat.arcgis.com/arcgis/rest/services/LandsatGLS/MS/ImageServer/",
+    path: "computeHistograms"
   });
-
-  var driveTimes = new L.FeatureGroup();
 
   var gpTask = gpService.createTask();
-  gpTask.setParam("Drive_Times", "1 2");
 
-  gpTask.setParam("linearUnitParam", { "distance": 3, "units": "esriMiles" })
-  map.addLayer(driveTimes);
+  // gpTask.setParam("geometryType", "esriGeometryPolygon");
+  // var stringifiedEsriPoly = '{"rings":[[[-149.52,64.277],[-149.52,64.48],[-148.53,64.48], [-148.53,64.27]]], "spatialReference":{"wkid":"4326"}}'
+  // gpTask.setParam("geometry", stringifiedEsriPoly);
 
-  map.on('click', function(evt){
-    document.getElementById('info-pane').innerHTML = 'working...';
-    driveTimes.clearLayers();
-    gpTask.setParam("Input_Location", evt.latlng)
-    gpTask.run(driveTimeCallback);
+  gpTask.setParam("geometryType", "esriGeometryEnvelope");
+  gpTask.setParam("geometry", map.getBounds());
+
+  gpTask.run(function(error, response, raw){
+    console.log(response.histograms);
   });
-
-  function driveTimeCallback(error, response, raw){
-    document.getElementById('info-pane').innerHTML = 'click on the map to calculate 1 and 2 minute drivetimes';
-    driveTimes.addLayer(L.geoJson(response.Output_Drive_Time_Polygons));
-  }
 </script>
 
 </body>
