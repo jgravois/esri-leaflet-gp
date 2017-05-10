@@ -7,7 +7,11 @@ Esri Leaflet GP relies on the minimal [Esri Leaflet](https://github.com/Esri/esr
 ## Demos
 Note that the latest version of this plugin requires a minimum of esri-leaflet [2.0.0](https://github.com/Esri/esri-leaflet/releases/tag/v2.0.0).
 
-Take a look at this [calculate drivetime demo](http://esri.github.io/esri-leaflet/examples/gp-plugin.html) or this [elevation profile demo](https://jgravois.github.io/esri-leaflet-gp/elevation.html) to see it in action.
+The demos below show the plugin in action
+
+* [calculate a drivetime polygon](http://esri.github.io/esri-leaflet/examples/gp-plugin.html)
+* [generate an elevation profile](https://jgravois.github.io/esri-leaflet-gp/elevation.html)
+* [route to the closest facility](https://jgravois.github.io/esri-leaflet-gp/closest-facility.html)
 
 ## Example
 
