@@ -62,7 +62,7 @@
     // use a service proxy to authenticate automagically
     // https://developers.arcgis.com/authentication/working-with-proxies/
     let closestFacilityService = L.esri.GP.service({
-        url: "http://utility.arcgis.com/usrsvcs/appservices/FnVYYTap8ykTDC1m/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World",
+        url: "https://utility.arcgis.com/usrsvcs/appservices/FnVYYTap8ykTDC1m/rest/services/World/ClosestFacility/NAServer/ClosestFacility_World",
         path: 'solveClosestFacility'
     });
     let closestFacilityTask = closestFacilityService.createTask();
@@ -73,7 +73,7 @@
 
     // fetch nearby hospitals from LA open data
     L.esri.query({
-      url: "http://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/LMS_Data_Public/MapServer/81"
+      url: "https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/LMS_Data_Public/MapServer/81"
     })
       .within(map.getBounds())
       .run(function (err, response, raw) {
