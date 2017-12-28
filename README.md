@@ -25,14 +25,14 @@ The demos below show the plugin in action
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
   <!-- Load Leaflet from CDN-->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.0.3"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.2.0"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://unpkg.com/esri-leaflet@2.0.8"></script>
+  <script src="https://unpkg.com/esri-leaflet@2.1.1"></script>
 
   <!-- Esri Leaflet GP -->
-  <script src="https://unpkg.com/esri-leaflet-gp@2.0.2"></script>
+  <script src="https://unpkg.com/esri-leaflet-gp@2.0.3"></script>
 
   <style>
     body {

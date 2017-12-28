@@ -67,8 +67,7 @@ export var Task = BaseTask.extend({
       this.params[paramName] = this._setGeometry(paramValue);
     } else {
       // otherwise assume its latlng, marker, bounds or geojson and package up an array of esri features
-      var geometryType = this._setGeometryType(paramValue)
-
+      var geometryType = this._setGeometryType(paramValue);
       var esriFeatures = {
         'features': []
       };
@@ -76,20 +75,17 @@ export var Task = BaseTask.extend({
       if (geometryType) {
         esriFeatures.geometryType = geometryType;
       }
-
       if (paramValue.type === 'FeatureCollection' && paramValue.features[0].type === 'Feature') {
-
         for (var i = 0; i < paramValue.features.length; i++) {
           if (paramValue.features[i].type === 'Feature') {
             // pass through feature attributes and geometries
             esriFeatures.features.push(Util.geojsonToArcGIS(paramValue.features[i]));
           } else {
             // otherwise assume the array only contains geometries
-            esriFeatures.features.push({ geometry: Util.geojsonToArcGIS(paramValue.features[i].geometry)});
+            esriFeatures.features.push({ geometry: Util.geojsonToArcGIS(paramValue.features[i].geometry) });
           }
         }
-      }
-      else {
+      } else {
         esriFeatures.features.push({'geometry': this._setGeometry(paramValue)});
       }
       this.params[paramName] = esriFeatures;
