@@ -18,9 +18,9 @@ export var Task = BaseTask.extend({
     // don't replace parent initialize
     BaseTask.prototype.initialize.call(this, options);
 
-    // if path isn't supplied in options, try and determine if its sync or async to set automatically
-    if (!this.options.path) {
-      // assume initially, that service is synchronous
+    // if no constuctor options are supplied try and determine if its sync or async and set path via metadata
+    if (!this.options.path && typeof this.options.async === 'undefined') {
+      // assume initially that the service is synchronous
       this.options.async = false;
       this.options.path = 'execute';
 
@@ -36,55 +36,63 @@ export var Task = BaseTask.extend({
           }
           this.fire('initialized');
         } else {
-          // if check fails, hopefully its synchronous
-          this.options.async = false;
-          this.options.path = 'execute';
+          // abort
           return;
         }
       }, this);
     } else {
-      // if path is custom, hopefully its synchronous
-      if (this.options.async !== true && this.options.path !== 'submitJob') {
-        this.options.async = false;
+      // if async is set, but not path, default to submit job
+      if (this.options.async) {
+        this.options.path = this.options.path ? this.options.path : 'submitJob';
+      }
+      if (!this.options.async) {
+        this.options.path = this.options.path ? this.options.path : 'execute';
       }
     }
   },
 
   // doc for various GPInput types can be found here
   // http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/GP_Result/02r3000000q7000000/
-
-  // set booleans, numbers, strings
   setParam: function (paramName, paramValue) {
-    if (typeof paramValue === 'boolean') {
-      this.params[paramName] = paramValue;
-      return;
-    } else if (typeof paramValue !== 'object') { // strings, numbers
+    if (typeof paramValue === 'boolean' || typeof paramValue !== 'object') {
+      // pass through booleans, numbers, strings
       this.params[paramName] = paramValue;
       return;
     } else if (typeof paramValue === 'object' && paramValue.units) {
-      // pass through GPLinearUnit params unmolested
+      // pass through GPLinearUnit params unmolested also
       this.params[paramName] = paramValue;
       return;
+    } else if (paramName === 'geometry') {
+      // convert raw geojson geometries to esri geometries
+      this.params[paramName] = this._setGeometry(paramValue);
     } else {
-      // otherwise assume its latlng, marker, bounds or geojson
-      if (paramName === 'geometry') {
-        this.params[paramName] = this._setGeometry(paramValue);
-      } else { // package up an array of esri features if the parameter name is anything other than geometry
-        var esriFeatures = {
-          'geometryType': this._setGeometryType(paramValue),
-          'features': []
-        };
+      // otherwise assume its latlng, marker, bounds or geojson and package up an array of esri features
+      var geometryType = this._setGeometryType(paramValue)
 
-        if (paramValue.type === 'FeatureCollection') {
-          for (var i = 0; i < paramValue.features.length; i++) {
-            esriFeatures.features.push({'geometry': Util.geojsonToArcGIS(paramValue.features[i].geometry)});
-          }
-        } else {
-          esriFeatures.features.push({'geometry': this._setGeometry(paramValue)});
-        }
+      var esriFeatures = {
+        'features': []
+      };
 
-        this.params[paramName] = esriFeatures;
+      if (geometryType) {
+        esriFeatures.geometryType = geometryType;
       }
+
+      if (paramValue.type === 'FeatureCollection' && paramValue.features[0].type === 'Feature') {
+
+        for (var i = 0; i < paramValue.features.length; i++) {
+          if (paramValue.features[i].type === 'Feature') {
+            // pass through feature attributes and geometries
+            esriFeatures.features.push(Util.geojsonToArcGIS(paramValue.features[i]));
+          } else {
+            // otherwise assume the array only contains geometries
+            esriFeatures.features.push({ geometry: Util.geojsonToArcGIS(paramValue.features[i].geometry)});
+          }
+        }
+      }
+      else {
+        esriFeatures.features.push({'geometry': this._setGeometry(paramValue)});
+      }
+      this.params[paramName] = esriFeatures;
     }
   },
 

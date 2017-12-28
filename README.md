@@ -12,6 +12,7 @@ The demos below show the plugin in action
 * [calculate a drivetime polygon](http://esri.github.io/esri-leaflet/examples/gp-plugin.html)
 * [generate an elevation profile](https://jgravois.github.io/esri-leaflet-gp/elevation.html)
 * [route to the closest facility](https://jgravois.github.io/esri-leaflet-gp/closest-facility.html)
+* [solve a vehicle routing problem](https://jgravois.github.io/esri-leaflet-gp/demos/vrp.html)
 
 ## Example
 

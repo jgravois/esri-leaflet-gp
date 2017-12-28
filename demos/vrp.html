@@ -1,0 +1,113 @@
+<html>
+<head>
+  <meta charset=utf-8 />
+  <title>D3 Elevation</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load D3 from CDN-->
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+  <!-- Load Leaflet from CDN-->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.3"></script>
+
+  <!-- Load Esri Leaflet from CDN -->
+  <script src="https://unpkg.com/esri-leaflet@2.0.8"></script>
+
+  <!-- Esri Leaflet GP -->
+  <!--script src="https://unpkg.com/esri-leaflet-gp@2.0.2"></script-->
+  <script src="../dist/esri-leaflet-gp-debug.js"></script>
+
+  <script src="https://unpkg.com/leaflet-shape-markers@1.0.6"></script>
+
+  <script src="./vrp.geojson"></script>
+
+  <style>
+    body {margin:0;padding:0;}
+    #map {position: absolute;top:0;bottom:0;right:0;left:0;}
+
+    #info-pane {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      padding: 1em;
+      background: white;
+      max-width: 240px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="info-pane" class="leaflet-bar">
+  <label>
+  lets route delivery trucks!
+  </label>
+</div>
+
+<script>
+ let map = L.map('map').setView([37.77, -122.458], 11);
+  L.esri.basemapLayer('Topographic').addTo(map);
+
+
+  // use a service proxy to authenticate automagically
+  // https://developers.arcgis.com/authentication/working-with-proxies/
+  let vrpService = L.esri.GP.service({
+      url: "https://utility.arcgis.com/usrsvcs/appservices/Ue66yHFfujrVODoO/rest/services/World/VehicleRoutingProblemSync/GPServer/EditVehicleRoutingProblem"
+  });
+
+  let vrpTask = vrpService.createTask();
+
+  // static parameters
+  vrpTask.setParam("time_units", "Minutes");
+  vrpTask.setParam("distance_units", "Miles");
+  vrpTask.setParam("uturn_policy", "NO_UTURNS");
+  vrpTask.setParam("populate_directions", true);
+  vrpTask.setParam("directions_language", "en");
+  vrpTask.setParam("default_date", 1355212800000);
+
+  // display the orders on the map as small diamonds
+  map.addLayer(L.geoJSON(orders, {
+    pointToLayer: function (geoJsonPoint, latlng) {
+      return L.shapeMarkers.diamondMarker(latlng, 10, { color: 'green', weight: 2 })
+    }
+  }));
+
+  // GeoJSON feature collection
+  vrpTask.setParam("orders", orders);
+
+  map.addLayer(L.geoJSON(depots, {
+    pointToLayer: function (geoJsonPoint, latlng) {
+      return L.shapeMarkers.crossMarker(latlng, 25, { color: 'blue', weight: 5 })
+    }
+  }));
+
+  // GeoJSON feature collection
+  vrpTask.setParam("depots", depots);
+
+  // GPRecordSet (GeoJSON feature collection w/o geometry)
+  vrpTask.setParam("routes", routes);
+
+  vrpTask.run(function (err, res, raw) {
+    map.addLayer(L.geoJSON(res.out_routes, {
+      style: function (feature) {
+        var c;
+        switch (feature.properties.Name) {
+          case "Truck_1":
+            c = "red";
+            break;
+          case "Truck_2":
+            c = "purple";
+            break;
+          default:
+            c = "black";
+        }
+        return { color: c}
+      }
+    }));
+  })
+</script>
+
+</body>
+</html>
