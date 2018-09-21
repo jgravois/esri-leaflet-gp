@@ -214,6 +214,27 @@ export var Task = BaseTask.extend({
     }
   },
 
+  getResult: function (jobId, output, callback, context) {
+    this._service.request(
+      'jobs/' + jobId + '/results/' + output,
+      this.resultParams,
+      function processJobResult (error, response) {
+        var result = null;
+        var out = (response && this._processAsyncOutput(response));
+
+        if (output in out) {
+          result = out[output];
+        }
+
+        callback.call(
+          context,
+          error,
+          result,
+          response
+        );
+      }, this);
+  },
+
   checkJob: function (jobId, callback, context) {
     var pollJob = function () {
       /* eslint-disable */
