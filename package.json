@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "leaflet": "^1.0.0",
-    "esri-leaflet": "^2.0.0"
+    "esri-leaflet": "^3.0.2"
   },
   "devDependencies": {
     "chai": "2.3.0",
