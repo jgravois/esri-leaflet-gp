@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [3.0.0]
+
+### Breaking Changes
+
+* Leaflet and Esri Leaflet are now peerDependencies so that consumers can install whichever version they want.
+
 ## [2.0.3]
 
 ### Added
@@ -101,7 +107,8 @@ This is expected to be the last (and only) stable release of Esri Leaflet GP com
 - refactored code to follow pattern established by [esri-leaflet-geocoder](https://github.com/Esri/esri-leaflet-geocoder)
 - introduced ability to check properties of GP services that don't support CORS
 
-[unreleased]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.3...HEAD
+[unreleased]: https://github.com/jgravois/esri-leaflet-gp/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.3...v3.0.0
 [2.0.3]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/jgravois/esri-leaflet-gp/compare/v2.0.0...v2.0.1
