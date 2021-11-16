@@ -6,7 +6,7 @@ setParam([])
 import L from 'leaflet';
 import { Task as BaseTask, Util } from 'esri-leaflet';
 
-export var Task = BaseTask.extend({
+export const Task = BaseTask.extend({
 
   includes: L.Evented.prototype,
 
@@ -37,7 +37,7 @@ export var Task = BaseTask.extend({
           this.fire('initialized');
         } else {
           // abort
-          return;
+
         }
       }, this);
     } else {
@@ -57,26 +57,24 @@ export var Task = BaseTask.extend({
     if (typeof paramValue === 'boolean' || typeof paramValue !== 'object') {
       // pass through booleans, numbers, strings
       this.params[paramName] = paramValue;
-      return;
     } else if (typeof paramValue === 'object' && paramValue.units) {
       // pass through GPLinearUnit params unmolested also
       this.params[paramName] = paramValue;
-      return;
     } else if (paramName === 'geometry') {
       // convert raw geojson geometries to esri geometries
       this.params[paramName] = this._setGeometry(paramValue);
     } else {
       // otherwise assume its latlng, marker, bounds or geojson and package up an array of esri features
-      var geometryType = this._setGeometryType(paramValue);
-      var esriFeatures = {
-        'features': []
+      const geometryType = this._setGeometryType(paramValue);
+      const esriFeatures = {
+        features: []
       };
 
       if (geometryType) {
         esriFeatures.geometryType = geometryType;
       }
       if (paramValue.type === 'FeatureCollection' && paramValue.features[0].type === 'Feature') {
-        for (var i = 0; i < paramValue.features.length; i++) {
+        for (let i = 0; i < paramValue.features.length; i++) {
           if (paramValue.features[i].type === 'Feature') {
             // pass through feature attributes and geometries
             esriFeatures.features.push(Util.geojsonToArcGIS(paramValue.features[i]));
@@ -86,7 +84,7 @@ export var Task = BaseTask.extend({
           }
         }
       } else {
-        esriFeatures.features.push({'geometry': this._setGeometry(paramValue)});
+        esriFeatures.features.push({ geometry: this._setGeometry(paramValue) });
       }
       this.params[paramName] = esriFeatures;
     }
@@ -97,7 +95,7 @@ export var Task = BaseTask.extend({
     this.params.outputParam = paramName;
   },
 
-  /* async elevation services need resultParams in order to return Zs (unnecessarily confusing)*/
+  /* async elevation services need resultParams in order to return Zs (unnecessarily confusing) */
   gpAsyncResultParam: function (paramName, paramValue) {
     this.resultParams[paramName] = paramValue;
   },
@@ -219,8 +217,8 @@ export var Task = BaseTask.extend({
       'jobs/' + jobId + '/results/' + output,
       this.resultParams,
       function processJobResult (error, response) {
-        var result = null;
-        var out = (response && this._processAsyncOutput(response));
+        let result = null;
+        const out = (response && this._processAsyncOutput(response));
 
         if (output in out) {
           result = out[output];
@@ -236,7 +234,7 @@ export var Task = BaseTask.extend({
   },
 
   checkJob: function (jobId, callback, context) {
-    var pollJob = function () {
+    const pollJob = function () {
       /* eslint-disable */
       this._service.request('jobs/' + jobId, {}, function polledJob (error, response) {
         if (response.jobStatus === 'esriJobSucceeded') {
@@ -257,22 +255,19 @@ export var Task = BaseTask.extend({
       /* eslint-enable */
     }.bind(this);
 
-    var counter = window.setInterval(pollJob, this._service.options.asyncInterval * 1000);
+    const counter = window.setInterval(pollJob, this._service.options.asyncInterval * 1000);
   },
 
   _processGPOutput: function (response) {
-    var processedResponse = {};
+    const processedResponse = {};
 
-    var results = response.results;
+    const results = response.results;
     // grab syncronous results
     if (this.options.async === false) {
       // loop through results and pass back, parsing esri json
-      for (var i = 0; i < results.length; i++) {
-        /* jshint ignore:start */
-        processedResponse[results[i].paramName];
-        /* jshint ignore:end */
+      for (let i = 0; i < results.length; i++) {
         if (results[i].dataType === 'GPFeatureRecordSetLayer') {
-          var featureCollection = Util.responseToFeatureCollection(results[i].value);
+          const featureCollection = Util.responseToFeatureCollection(results[i].value);
           processedResponse[results[i].paramName] = featureCollection;
         } else {
           processedResponse[results[i].paramName] = results[i].value;
@@ -285,9 +280,9 @@ export var Task = BaseTask.extend({
 
     // if output is a raster layer, we also need to stub out a MapService url using jobid
     if (this.options.async === true && response.dataType === 'GPRasterDataLayer') {
-      var baseURL = this.options.url;
-      var n = baseURL.indexOf('GPServer');
-      var serviceURL = baseURL.slice(0, n) + 'MapServer/';
+      const baseURL = this.options.url;
+      const n = baseURL.indexOf('GPServer');
+      const serviceURL = baseURL.slice(0, n) + 'MapServer/';
       processedResponse.outputMapService = serviceURL + 'jobs/' + this._currentJobId;
     }
 
@@ -295,10 +290,10 @@ export var Task = BaseTask.extend({
   },
 
   _processNetworkAnalystOutput: function (response) {
-    var processedResponse = {};
+    const processedResponse = {};
 
     if (response.routes.features.length > 0) {
-      var featureCollection = Util.responseToFeatureCollection(response.routes);
+      const featureCollection = Util.responseToFeatureCollection(response.routes);
       processedResponse.routes = featureCollection;
     }
 
@@ -306,20 +301,20 @@ export var Task = BaseTask.extend({
   },
 
   _processAsyncOutput: function (response) {
-    var processedResponse = {};
+    const processedResponse = {};
     processedResponse.jobId = this._currentJobId;
 
     // if output is a raster layer, we also need to stub out a MapService url using jobid
     if (this.options.async === true && response.dataType === 'GPRasterDataLayer') {
-      var baseURL = this.options.url;
-      var n = baseURL.indexOf('GPServer');
-      var serviceURL = baseURL.slice(0, n) + 'MapServer/';
+      const baseURL = this.options.url;
+      const n = baseURL.indexOf('GPServer');
+      const serviceURL = baseURL.slice(0, n) + 'MapServer/';
       processedResponse.outputMapService = serviceURL + 'jobs/' + this._currentJobId;
     }
 
     // if output is GPFeatureRecordSetLayer, convert to GeoJSON
     if (response.dataType === 'GPFeatureRecordSetLayer') {
-      var featureCollection = Util.responseToFeatureCollection(response.value);
+      const featureCollection = Util.responseToFeatureCollection(response.value);
       processedResponse[response.paramName] = featureCollection;
     } else {
       processedResponse[response.paramName] = response.value;
